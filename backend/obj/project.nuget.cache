@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TxsDFB1EaGJCBr2DGhJwxpms1WnkiJYvG9yugYSfULcvuIPFq/EGrIeXEE8ueAD/MYkbalw+0DZ/hySKJBqtHA==",
+  "dgSpecHash": "Oca8ugUUz9QbmxXrN/QfcWvPuts9yHkQ0rTBUep4r1MSMZdxzFUdRNpIUpuj8r7BVO7Ix2ExBkySRCqjlTJXPA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\javie\\source\\repos\\backend\\backend.csproj",
+  "projectFilePath": "c:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\javie\\.nuget\\packages\\functions-csharp\\1.3.1\\functions-csharp.1.3.1.nupkg.sha512",
     "C:\\Users\\javie\\.nuget\\packages\\gotrue-csharp\\4.2.6\\gotrue-csharp.4.2.6.nupkg.sha512",
