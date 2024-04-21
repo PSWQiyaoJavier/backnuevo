@@ -3,12 +3,10 @@ using Postgrest.Models;
 
 namespace backend.MetodoFabrica
 {
-    [Table("compradorfinal")]
+    [Table("comprador")]
     public class UsuarioComprador : UsuarioFabrica
     {
-        [PrimaryKey]
-        [Column("id")]
-        public int Id { get; set; }
+
 
         [Column("limite_gasto_cents_mes")]
         public int Limite_gasto_cents_mes { get; set; }

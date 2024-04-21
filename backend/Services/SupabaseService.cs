@@ -205,14 +205,19 @@ namespace backend.Services
         public async Task InsertarBuyerFactory(UsuarioComprador nuevouser)
         {
             
-
-            // Inserta el nuevo producto en la tabla correspondiente
-            await _supabaseClient
-                    .From<UsuarioComprador>()
-                    .Insert(nuevouser);
-            Console.WriteLine("Compradorfactory insertado correctamente en Supabase.");
+            try{
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                        .From<UsuarioComprador>()
+                        .Insert(nuevouser);
+                Console.WriteLine("Compradorfactory insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar buyerfactory en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
         }
-
         public async Task InsertarSellerFactory(UsuarioVendedor nuevouser)
         {
             

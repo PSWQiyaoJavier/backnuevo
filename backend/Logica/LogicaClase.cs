@@ -246,12 +246,13 @@ namespace backend.Logica
             Fabrica factory;
             factory = new Fabrica(limite);
             UsuarioFabrica userfactory = factory.CrearUsuarioFabrica(nombre, nick_name, contraseña, email, edad);
-            await AddFactoryMember(userfactory);
-            UsuarioFabrica user1 = await ObtenerFabricUserPorNick(userfactory.Nick_name);
-            int id = user1.Id;
+            //await AddFactoryMember(userfactory);
+            //UsuarioFabrica user1 = await ObtenerFabricUserPorNick(userfactory.Nick_name);
+            //int id = user1.Id;
             if (userfactory is UsuarioComprador comprador)
             {
-                comprador.Id = id;
+                //comprador.BaseUrl = user1.BaseUrl;
+                //comprador.Id = id;
                 interf.InsertarBuyerFactory(comprador);
                 Console.WriteLine("Hola comprador");
                 //UsuarioComprador comprador = (UsuarioComprador)userfactory;
@@ -262,7 +263,7 @@ namespace backend.Logica
             }
             else if (userfactory is UsuarioVendedor vendedor)
             {
-                vendedor.Id = id;
+                //vendedor.Id = id;
                 interf.InsertarSellerFactory(vendedor);
                 // Persistir en la tabla de usuarios vendedores
                 // Podrías llamar a un método de persistencia para hacerlo
