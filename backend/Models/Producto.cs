@@ -1,10 +1,11 @@
 ﻿using Postgrest.Attributes;
 using Postgrest.Models;
+using backend.PatronObservador;
 
 namespace backend.Models
 {
     [Table("producto")]
-    public class Producto : BaseModel
+    public class Producto : BaseModel, ISujetoObservado
     {
         [PrimaryKey("id", false)]
         public int Id { get; set; }
@@ -24,6 +25,27 @@ namespace backend.Models
         public Vendedor Vendedor { get; set; }
         
         public Articulo Articulo { get; set; }
+
+
+        private List<IObservador> observadores = new List<IObservador>();
+
+        public void AgregarObservador(IObservador observador)
+        {
+            observadores.Add(observador);
+        }
+
+        public void EliminarObservador(IObservador observador)
+        {
+            observadores.Remove(observador);
+        }
+
+        public void NotificarObservadores()
+        {
+            foreach (var observador in observadores)
+            {
+                observador.Actualizar();
+            }
+        }
 
     }
 }

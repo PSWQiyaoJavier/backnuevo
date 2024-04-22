@@ -8,8 +8,8 @@ namespace backend.Models
     {
 
         [PrimaryKey]
-        [Column("id_usuario")]
-        public int Id_usuario { get; set; }
+        [Column("id_comprador")]
+        public int Id_comprador { get; set; }
         
         [PrimaryKey]
         [Column("id_producto")]

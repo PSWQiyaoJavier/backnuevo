@@ -1,10 +1,11 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
+using backend.PatronObservador;
 
 namespace backend.MetodoFabrica
 {
     [Table("comprador")]
-    public class UsuarioComprador : UsuarioFabrica
+    public class UsuarioComprador : UsuarioFabrica, IObservador
     {
 
 
@@ -20,6 +21,12 @@ namespace backend.MetodoFabrica
         public UsuarioComprador()
         {
             // Puedes inicializar propiedades comunes aquí si es necesario
+        }
+
+        public void Actualizar()
+        {
+            // Lógica para manejar la actualización del Producto
+            Console.WriteLine("El producto ha sido actualizado. Deberías tomar alguna acción.");
         }
     }
 }
