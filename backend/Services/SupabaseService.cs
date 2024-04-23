@@ -230,16 +230,6 @@ namespace backend.Services
         }
 
 
-        public async Task InsertarBuyerEnUsuarios(Comprador2 nuevouser)
-        {
-            
-
-            // Inserta el nuevo producto en la tabla correspondiente
-            await _supabaseClient
-                    .From<Comprador2>()
-                    .Insert(nuevouser);
-            Console.WriteLine("User insertado correctamente en Supabase.");
-        }
 
         public async Task InsertarBuyer(Comprador nuevobuyer)
         {

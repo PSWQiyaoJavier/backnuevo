@@ -105,7 +105,7 @@ namespace backend.Logica
             IList<CarritoCompra> allContents = ObtenerChart();
 
             
-            allContents = allContents.Where(c => c.Id_usuario==user.Id).ToList();
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
             
 
             return allContents.ToList();
@@ -200,23 +200,6 @@ namespace backend.Logica
 
         }
 
-        public void AddBuyer22(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null)
-        {
-            Comprador2 nuevoUsuario2;
-
-            nuevoUsuario2 = new Comprador2
-                {
-                    Nombre = nombre,
-                    Nick_name = nick_name,
-                    Contraseña = contraseña,
-                    Email = email,
-                    Edad = edad,
-                };
-
-            interf.InsertarBuyerEnUsuarios(nuevoUsuario2);
-            
-
-        }
         public void AddBuyer2(int limite)
         {
 
@@ -390,7 +373,7 @@ namespace backend.Logica
             // Por ejemplo:
             CarritoCompra nuevoElemento = new CarritoCompra
             {
-                Id_usuario = usuarioId,
+                Id_comprador = usuarioId,
                 Id_producto = productoId
                 // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
             };

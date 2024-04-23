@@ -194,13 +194,6 @@ namespace backend.Controllers
             return Ok();
         }
 
-        [HttpPost("registrobuyer2")]
-        public IActionResult Añadirbuyer2(RegistroRequest request)
-        {
-            
-            _logica.AddBuyer22(request.Nombre, request.Nick, request.Password, request.Email, request.Edad);
-            return Ok();
-        }
 
         [HttpPost("registroglobal")]
         public IActionResult RegistroGlobl(RegistroRequest request)

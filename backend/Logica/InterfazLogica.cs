@@ -46,7 +46,6 @@ namespace backend.Logica
         //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
         void AddBuyer(Comprador comp);
         void AddBuyer2(int limite);
-        void AddBuyer22(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
         Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick);
         Task AddFactoryMember(UsuarioFabrica nuevouser);
