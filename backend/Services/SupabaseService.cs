@@ -125,6 +125,17 @@ namespace backend.Services
             Usuario users = result.Model;
             return users;                    
         }
+        public async Task<UsuarioComprador> UserBuyerByNick(string filtro)
+        {
+            var result = await _supabaseClient
+                                .From<UsuarioComprador>()
+                                .Where(x => x.Nick_name == filtro)
+                                .Get();
+            
+                                
+            UsuarioComprador users = result.Model;
+            return users;                    
+        }
 
         public async Task<List<Comprador>> GetAllBuyers()
         {
@@ -253,6 +264,18 @@ namespace backend.Services
         // Realizar una consulta a la tabla de usuarios para verificar si existe un usuario con el apodo dado
             var result = await _supabaseClient
                                 .From<Usuario>()
+                                .Where(x => x.Nick_name == apodo)
+                                .Get();
+
+            // Si la consulta devuelve algún resultado, significa que el usuario existe
+            return result.Models.Any();
+        }
+
+        public async Task<bool> UsuarioCompradorExistePorApodo(string apodo)
+        {
+        // Realizar una consulta a la tabla de usuarios para verificar si existe un usuario con el apodo dado
+            var result = await _supabaseClient
+                                .From<UsuarioComprador>()
                                 .Where(x => x.Nick_name == apodo)
                                 .Get();
 

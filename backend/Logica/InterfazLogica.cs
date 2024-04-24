@@ -28,13 +28,12 @@ namespace backend.Logica
         Usuario UserLogged();
         Usuario ObtenerUsuarioPorNick(string nick);
         Producto ObtenerProductoPorPrecio(int nick);
-        //Comprador ObtenerCompradorPorNick(string nick);
+
         Usuario ObtenerUsuarioPorEdad(int edad);
         Usuario UpdateEdadUsuario(Usuario usuario,int edad);
         void AddUsuario(Usuario usuario);
         void AgregarAlCarrito(int usuarioId, int productoId);
-        //void CrearUsuario(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
-        //void AgregarUsuarioABaseDeDatos(Usuario usuario,int? limiteGasto);
+
         IList<CarritoCompra> GetChartByUser(Usuario user);
         IList<CarritoCompra> ObtenerChart();
 
@@ -42,13 +41,15 @@ namespace backend.Logica
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
         void Logout();
 
-        //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
         void AddBuyer(Comprador comp);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
         Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick);
         Task AddFactoryMember(UsuarioFabrica nuevouser);
-        //void AgregarUsuarioABaseDeDatos2(Usuario usuario, int? limiteGasto);
-        //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
+        Task LoginComprador(String nick, String password);
+        IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);
+        UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);
+        
+
 
     }
 }

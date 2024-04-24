@@ -90,9 +90,9 @@ namespace backend.Controllers
         {
             try
             {
-                await _logica.Login(request.Nick, request.Password);
-                var perfil = _logica.ObtenerUsuarioPorNick(request.Nick);
-                var user = _logica.GetChartByUser(perfil);
+                await _logica.LoginComprador(request.Nick, request.Password);
+                var perfil = _logica.ObtenerUsuarioCompradorPorNick(request.Nick);
+                var user = _logica.GetChartByUserBuyer(perfil);
                 var productos = new List<Producto>();
 
                 // Para cada carrito en la lista de carritos

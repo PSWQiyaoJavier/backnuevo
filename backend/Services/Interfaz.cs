@@ -39,5 +39,7 @@ namespace backend.Services
         Task InsertarBuyerFactory(UsuarioComprador nuevouser);
         Task InsertarSellerFactory(UsuarioVendedor nuevouser);
         Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro);
+        Task<bool> UsuarioCompradorExistePorApodo(string apodo);
+        Task<UsuarioComprador> UserBuyerByNick(string filtro);
     }
 }

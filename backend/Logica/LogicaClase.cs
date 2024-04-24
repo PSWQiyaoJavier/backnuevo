@@ -91,6 +91,19 @@ namespace backend.Logica
             return allContents.ToList();
         }
 
+        public IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<CarritoCompra> allContents = ObtenerChart();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
         public IList<Producto> GetProductByChart(CarritoCompra carr)
         {
             
@@ -168,29 +181,6 @@ namespace backend.Logica
 
         }
 
-        public void AddBuyer2(int limite)
-        {
-
-            Usuario nuevoUsuario2 = ObtenerUsuarioPorNick("anita1234");
-
-            Comprador nuevoUsuario3 = new Comprador
-            {
-                Id = nuevoUsuario2.Id ,
-                Nombre = nuevoUsuario2.Nombre,
-                Nick_name = nuevoUsuario2.Nick_name,
-                Contraseña = nuevoUsuario2.Contraseña,
-                Email = nuevoUsuario2.Email,
-                Edad = nuevoUsuario2.Edad,
-                BaseUrl = nuevoUsuario2.BaseUrl,
-                Limite_gasto_cents_mes = limite
-                
-            };
-            Console.WriteLine("El id es :" + nuevoUsuario2.PrimaryKey);
-    
-            interf.InsertarBuyer(nuevoUsuario3);
-            
-
-        }
 
         public async Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite)
         {
@@ -236,6 +226,17 @@ namespace backend.Logica
             Console.WriteLine("Usuario con nick :" + user.Nick_name + "y contraseña :" + user.Contraseña + " logueado");
         }
 
+        public async Task LoginComprador(String nick, String password)
+        {
+            if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
+
+            if (await interf.UsuarioCompradorExistePorApodo(nick)==false) throw new UsuarioNoExisteException("El usuario no existe");
+            UsuarioComprador user =  await interf.UserBuyerByNick(nick);
+            
+            if (!user.Contraseña.Equals(password)) throw new ContraseñaIncorrectaException("Contraseña incorrecta");
+            Console.WriteLine("UsuarioComprador con nick :" + user.Nick_name + " y contraseña :" + user.Contraseña + " logueado");
+        }
+
         public Usuario UserLogged()
         {
             Usuario user = userlogin;
@@ -257,6 +258,16 @@ namespace backend.Logica
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
             Usuario user1 = productosTask.Result;
+            return user1;
+        }
+
+        public  UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick)
+        {
+
+            var productosTask = interf.UserBuyerByNick(nick); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            UsuarioComprador user1 = productosTask.Result;
             return user1;
         }
 
