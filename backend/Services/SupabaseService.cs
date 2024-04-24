@@ -72,7 +72,7 @@ namespace backend.Services
         {
             var result = await _supabaseClient
                                 .From<Producto>()
-                                .Where(x => x.Precio_cents == filtro)
+                                .Where(x => x.Precio == filtro)
                                 .Get();
             
                                 
@@ -100,15 +100,6 @@ namespace backend.Services
             return productos1;
         }
 
-        public async Task<List<Articulo>> GetAllArticles()
-        {
-            var productos = await _supabaseClient
-                                .From<Articulo>()
-                                .Get();
-
-            List <Articulo> productos1 = productos.Models;
-            return productos1;
-        }
 
         public async Task<List<Usuario>> GetAllUsers()
         {

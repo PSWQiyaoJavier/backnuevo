@@ -34,7 +34,6 @@ namespace backend.Services
         Task<Producto> ProductByPrice(int filtro);
         Task InsertarBuyer(Comprador nuevobuyer);
         Task<List<CarritoCompra>> GetChart();
-        Task<List<Articulo>> GetAllArticles();
         Task Insert1<Comprador>(Comprador item) where Comprador : Usuario,new();
         Task InsertarUserFactory(UsuarioFabrica nuevouser);
         Task InsertarBuyerFactory(UsuarioComprador nuevouser);

@@ -22,7 +22,7 @@ namespace backend.Logica
         IList<Usuario> ObtenerUsuarios();
         IList<Usuario> ObtenerUsuarios2();
         Boolean Bool1(string nick);
-        IList<Producto> GetContentsByParameters2(int keyWords);
+        IList<Producto> ObtenerProductosPorNombre(string keyWords);
         void AddMember(Usuario user);
         Task Login(String nick, String password);
         Usuario UserLogged();
@@ -37,15 +37,13 @@ namespace backend.Logica
         //void AgregarUsuarioABaseDeDatos(Usuario usuario,int? limiteGasto);
         IList<CarritoCompra> GetChartByUser(Usuario user);
         IList<CarritoCompra> ObtenerChart();
-        IList<Articulo> ObtenerArticulos();
-        IList<Articulo> GetArticleByProduct(Producto prod);
+
         IList<Producto> GetProductByChart(CarritoCompra carr);
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
         void Logout();
-        IList<Articulo> GetArticlesByName(string keyWords);
+
         //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
         void AddBuyer(Comprador comp);
-        void AddBuyer2(int limite);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
         Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick);
         Task AddFactoryMember(UsuarioFabrica nuevouser);

@@ -11,20 +11,20 @@ namespace backend.Models
         public int Id { get; set; }
 
 
-        [Column("precio_cents")]
-        public int Precio_cents { get; set; }
+        [Column("nombre")]
+        public string Nombre { get; set; }
 
-        [Column("unidades")]
-        public int Unidades { get; set; }
+        [Column("categoria")]
+        public string Categoria { get; set; }
 
-        [Column("id_usuario")]
-        public int Id_usuario { get; set; }
+        [Column("descripcion")]
+        public string Descripcion { get; set; }
 
-        [Column("id_articulo")]
-        public int Id_articulo { get; set; }
-        public Vendedor Vendedor { get; set; }
-        
-        public Articulo Articulo { get; set; }
+        [Column("cantidad")]
+        public int Cantidad { get; set; }
+
+        [Column("precio")]
+        public float Precio { get; set; }
 
 
         private List<IObservador> observadores = new List<IObservador>();

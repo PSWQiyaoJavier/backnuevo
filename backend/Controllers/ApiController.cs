@@ -94,7 +94,6 @@ namespace backend.Controllers
                 var perfil = _logica.ObtenerUsuarioPorNick(request.Nick);
                 var user = _logica.GetChartByUser(perfil);
                 var productos = new List<Producto>();
-                var items = new List<Articulo>();
 
                 // Para cada carrito en la lista de carritos
                 foreach(var product in user)
@@ -105,19 +104,11 @@ namespace backend.Controllers
                     // Agregar los artículos a la lista de items
                     productos.AddRange(productItems);
                 }
-                foreach(var prod in productos)
-                {
-                    // Obtener los artículos asociados al producto
-                    var productItems = _logica.GetArticleByProduct(prod);
-                    
-                    // Agregar los artículos a la lista de items
-                    items.AddRange(productItems);
-                }
 
                 var responseData = new 
                 {
                     Perfil = perfil,
-                    ArticulosEnCarrito = items
+                    ArticulosEnCarrito = productos
                 };
 
                 return Ok(responseData);
@@ -183,16 +174,6 @@ namespace backend.Controllers
 
 
 */
-        
-
-
-        [HttpPost("registrobuyer")]
-        public IActionResult Añadirbuyer(Buyer request)
-        {
-            
-            _logica.AddBuyer2(request.limite);
-            return Ok();
-        }
 
 
         [HttpPost("registroglobal")]
