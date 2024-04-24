@@ -1,6 +1,7 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 using backend.PatronObservador;
+using backend.Models;
 
 namespace backend.MetodoFabrica
 {
@@ -11,6 +12,8 @@ namespace backend.MetodoFabrica
 
         [Column("limite_gasto_cents_mes")]
         public int Limite_gasto_cents_mes { get; set; }
+
+        public List<Producto> Carritolista { get; set; }
 
         public UsuarioComprador(string nombre, string nick_name, string contraseña, string email, int edad, int limite)
             : base(nombre, nick_name, contraseña, email, edad)

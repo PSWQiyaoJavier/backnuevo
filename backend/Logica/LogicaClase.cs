@@ -283,6 +283,11 @@ namespace backend.Logica
             
         }
 
+        public void AddProductToCart(UsuarioComprador buyer, Producto product)
+        {
+            buyer.Carritolista.Add(product);
+        }
+
 
     }
 
