@@ -19,11 +19,10 @@ namespace backend.Logica
     public interface InterfazLogica
     {
         IList<Producto> ObtenerProductos();
-        IList<Usuario> ObtenerUsuarios();
-        IList<Usuario> ObtenerUsuarios2();
+        IList<UsuarioFabrica> ObtenerUsuarios();
         Boolean Bool1(string nick);
         IList<Producto> ObtenerProductosPorNombre(string keyWords);
-        void AddMember(Usuario user);
+
         Task Login(String nick, String password);
         Usuario UserLogged();
         Usuario ObtenerUsuarioPorNick(string nick);
@@ -31,7 +30,6 @@ namespace backend.Logica
 
         Usuario ObtenerUsuarioPorEdad(int edad);
         Usuario UpdateEdadUsuario(Usuario usuario,int edad);
-        void AddUsuario(Usuario usuario);
         void AgregarAlCarrito(int usuarioId, int productoId);
 
         IList<CarritoCompra> GetChartByUser(Usuario user);
@@ -40,11 +38,7 @@ namespace backend.Logica
         IList<Producto> GetProductByChart(CarritoCompra carr);
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
         void Logout();
-
-        void AddBuyer(Comprador comp);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
-        Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick);
-        Task AddFactoryMember(UsuarioFabrica nuevouser);
         Task LoginComprador(String nick, String password);
         IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);
         UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);

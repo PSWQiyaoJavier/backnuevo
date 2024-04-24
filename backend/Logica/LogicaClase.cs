@@ -34,23 +34,12 @@ namespace backend.Logica
         }
 
 
-        public IList<Usuario> ObtenerUsuarios()
+        public IList<UsuarioFabrica> ObtenerUsuarios()
         {
             var productosTask = interf.GetAllUsers(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<Usuario> productos1 = productosTask.Result;
-            return productos1;
-        }
-
-
-
-        public IList<Usuario> ObtenerUsuarios2()
-        {
-            var productosTask = interf.GetAllUsers(); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            //return productosTask.Result;
-            List<Usuario> productos1 = productosTask.Result;
+            List<UsuarioFabrica> productos1 = productosTask.Result;
             return productos1;
         }
 
@@ -118,39 +107,11 @@ namespace backend.Logica
         }
 
 
-        public void AddMember(Usuario user)
+        public async Task AddFactoryMember(UsuarioComprador nuevouser)
         {
 
             
-            IList<Usuario> allUsers = ObtenerUsuarios();
-
-
-            bool nicknamebool = allUsers.Any(u => u.Nick_name == user.Nick_name);
-
-            // Verificar si ya existe un miembro con el mismo correo electrónico
-            bool emailbool = allUsers.Any(u => u.Email == user.Email);
-
-
-            if (!nicknamebool && !emailbool)
-            {
-                interf.InsertarUser(user);
-            }
-            else
-            {
-                if (nicknamebool)
-                    throw new Exception("El member con nick " + user.Nick_name + " ya existe.");
-
-                if (emailbool)
-                    throw new Exception("El member con correo electrónico " + user.Email + " ya existe.");
-            }
-
-        }
-
-        public async Task AddFactoryMember(UsuarioFabrica nuevouser)
-        {
-
-            
-            IList<Usuario> allUsers = ObtenerUsuarios();
+            IList<UsuarioFabrica> allUsers = ObtenerUsuarios();
 
 
             bool nicknamebool = allUsers.Any(u => u.Nick_name == nuevouser.Nick_name);
@@ -161,7 +122,7 @@ namespace backend.Logica
 
             if (!nicknamebool && !emailbool)
             {
-                await interf.InsertarUserFactory(nuevouser);
+                await interf.InsertarBuyerFactory(nuevouser);
             }
             else
             {
@@ -174,12 +135,6 @@ namespace backend.Logica
 
         }
 
-        public void AddBuyer(Comprador comp)
-        {
-            //interf.InsertarBuyer(comp);
-            
-
-        }
 
 
         public async Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite)
@@ -194,8 +149,8 @@ namespace backend.Logica
             {
                 //comprador.BaseUrl = user1.BaseUrl;
                 //comprador.Id = id;
-                interf.InsertarBuyerFactory(comprador);
-                Console.WriteLine("Hola comprador");
+                AddFactoryMember(comprador);
+                //interf.InsertarBuyerFactory(comprador);
                 //UsuarioComprador comprador = (UsuarioComprador)userfactory;
                 //interf.InsertarBuyerFactory(userfactory);
                 // Persistir en la tabla de usuarios compradores
@@ -291,15 +246,6 @@ namespace backend.Logica
             return user1;
         }
 */
-        public  async Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick)
-        {
-
-            var productosTask = interf.UsuarioFabricaByNick(nick); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            //return productosTask.Result;
-            UsuarioFabrica user1 = productosTask.Result;
-            return user1;
-        }
         public  Usuario ObtenerUsuarioPorEdad(int edad)
         {
 
@@ -320,11 +266,7 @@ namespace backend.Logica
 
         }
 
-        public void AddUsuario(Usuario usuario)
-        {
-            interf.InsertarUser(usuario);
 
-        }
 
         public void AgregarAlCarrito(int usuarioId, int productoId)
         {

@@ -101,13 +101,13 @@ namespace backend.Services
         }
 
 
-        public async Task<List<Usuario>> GetAllUsers()
+        public async Task<List<UsuarioFabrica>> GetAllUsers()
         {
             var users = await _supabaseClient
-                                .From<Usuario>()
+                                .From<UsuarioFabrica>()
                                 .Get();
 
-            List <Usuario> allusers = users.Models;
+            List <UsuarioFabrica> allusers = users.Models;
             return allusers;
         
         }
