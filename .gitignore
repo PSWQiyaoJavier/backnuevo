@@ -1,6 +1,6 @@
 # Binarios generados
-backend/bin/
-backend/obj/
+backend\bin/
+backend\obj/
 
 # Carpetas de dependencias
 packages/

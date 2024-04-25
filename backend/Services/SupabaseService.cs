@@ -80,6 +80,18 @@ namespace backend.Services
             return users;                    
         }
 
+        public async Task<Producto> ProductById(int id)
+        {
+            var result = await _supabaseClient
+                                .From<Producto>()
+                                .Where(x => x.Id == id)
+                                .Get();
+            
+                                
+            Producto users = result.Model;
+            return users;                    
+        }
+
         public async Task<List<Producto>> GetAllProducts()
         {
             var productos = await _supabaseClient
@@ -137,13 +149,13 @@ namespace backend.Services
             return users;                    
         }
 
-        public async Task<List<Comprador>> GetAllBuyers()
+        public async Task<List<UsuarioComprador>> GetAllBuyers()
         {
             var users = await _supabaseClient
-                                .From<Comprador>()
+                                .From<UsuarioComprador>()
                                 .Get();
 
-            List <Comprador> allusers = users.Models;
+            List <UsuarioComprador> allusers = users.Models;
             return allusers;
         
         }

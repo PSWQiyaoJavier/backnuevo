@@ -2,6 +2,7 @@ using backend.Services;
 using backend.Models;
 using System.Collections.Generic;
 using backend.MetodoFabrica;
+using backend.DatosEnMemoria;
 
 namespace backend.Logica
 {
@@ -9,9 +10,104 @@ namespace backend.Logica
     {
         private readonly Interfaz interf;
         private Usuario userlogin;
+
+        private static List<Producto> _productos = new List<Producto>();
+        private static List<UsuarioComprador> _compradores = new List<UsuarioComprador>();
+        
+
         public LogicaClase(Interfaz interf)
         {
             this.interf = interf;
+
+            if (_productos.Count == 0 && _compradores.Count == 0)
+            {
+                InicializarDatosDesdeBD().Wait();
+            }
+        }
+
+
+        public async Task InicializarDatosDesdeBD()
+        {
+            // Obtener los datos de productos y compradores desde la base de datos
+            var datosProductos = ObtenerProductos();
+            var datosCompradores = ObtenerCompradores();
+
+            // Convertir los datos en objetos de tu dominio
+            foreach (var datosProducto in datosProductos)
+            {
+                Producto producto = new Producto
+                {
+                    Id = datosProducto.Id,
+                    Nombre = datosProducto.Nombre,
+                    Categoria = datosProducto.Categoria,
+                    Descripcion = datosProducto.Descripcion,
+                    Cantidad = datosProducto.Cantidad,
+                    Precio = datosProducto.Precio
+                    // Puedes agregar más propiedades si es necesario
+                };
+
+                _productos.Add(producto);
+            }
+
+            foreach (var datosComprador in datosCompradores)
+            {
+                UsuarioComprador comprador = new UsuarioComprador
+                {
+                    Id = datosComprador.Id,
+                    Nombre = datosComprador.Nombre,
+                    Nick_name = datosComprador.Nick_name,
+                    Contraseña = datosComprador.Contraseña,
+                    Email = datosComprador.Email,
+                    Edad = datosComprador.Edad,
+                    Limite_gasto_cents_mes = datosComprador.Limite_gasto_cents_mes,
+                    Carritolista = datosComprador.Carritolista,
+                    Guardadoslista = datosComprador.Guardadoslista
+                    // Puedes agregar más propiedades si es necesario
+                };
+
+                _compradores.Add(comprador);
+            }
+        }
+
+
+        public void AgregarProductoAGuardados(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                // Código para trabajar con los compradores y productos
+                // Obtener el comprador y el producto correspondientes
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if (comprador.Guardadoslista == null)
+                        {
+                            comprador.Guardadoslista = new List<Producto>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.Guardadoslista.Add(producto);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+
+                    // Actualizar los datos en la base de datos si es necesario
+                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
+                    // Por ejemplo, si estás utilizando un servicio de Supabase:
+                    //_supabaseService.ActualizarComprador(comprador);
+                }
+                else
+                {
+                    // Manejar el caso en el que no se encontró el comprador o el producto
+                    // Por ejemplo, lanzar una excepción o devolver un mensaje de error
+                }
+            }
+            
+
+            
         }
 
 
@@ -40,6 +136,15 @@ namespace backend.Logica
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
             List<UsuarioFabrica> productos1 = productosTask.Result;
+            return productos1;
+        }
+
+        public IList<UsuarioComprador> ObtenerCompradores()
+        {
+            var productosTask = interf.GetAllBuyers(); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            List<UsuarioComprador> productos1 = productosTask.Result;
             return productos1;
         }
 
@@ -235,6 +340,16 @@ namespace backend.Logica
             Producto user1 = productosTask.Result;
             return user1;
         }
+
+        public  Producto ObtenerProductoPorId(int id)
+        {
+
+            var productosTask = interf.ProductById(id); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            Producto user1 = productosTask.Result;
+            return user1;
+        }
         /*
         public  Comprador ObtenerCompradorPorNick(string nick)
         {
@@ -288,6 +403,23 @@ namespace backend.Logica
             buyer.Carritolista.Add(product);
         }
 
+        public async Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto)
+        {
+            UsuarioComprador comprador = ObtenerUsuarioCompradorPorNick(nickcomprador);
+            Producto producto = ObtenerProductoPorId(idProducto);
+
+            if (comprador == null || producto == null)
+            {
+                // Manejar el caso donde el comprador o el producto no existen
+                return;
+            }
+
+            // Suscribir al comprador como observador del producto
+            producto.AgregarObservador(comprador);
+            comprador.AgregarProductoGuardado(producto);
+
+            // Guardar el producto para más tarde (lógica adicional aquí)
+        }
 
     }
 

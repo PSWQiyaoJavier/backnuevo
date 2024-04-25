@@ -42,7 +42,10 @@ namespace backend.Logica
         Task LoginComprador(String nick, String password);
         IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);
         UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);
-        
+        IList<UsuarioComprador> ObtenerCompradores();
+        Task InicializarDatosDesdeBD();
+        Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto);
+        void AgregarProductoAGuardados(int idComprador, int idProducto);
 
 
     }

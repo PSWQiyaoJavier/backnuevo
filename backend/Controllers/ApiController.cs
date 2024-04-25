@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Logica;
+using backend.DatosEnMemoria;
+using backend.MetodoFabrica;
 
 
 namespace backend.Controllers
@@ -174,7 +176,37 @@ namespace backend.Controllers
 
 
 */
+/*
+        [HttpPost("guardar-paramas-tarde")]
+        public async Task<ActionResult> GuardarParaMasTarde(int idComprador, int idProducto)
+        {
+            // Obtener el comprador y el producto
+            UsuarioComprador comprador = _datosEnMemoria._compradores.FirstOrDefault(c => c.Id == idComprador);
+            Producto producto = _datosEnMemoria._productos.FirstOrDefault(p => p.Id == idProducto);
 
+            if (comprador == null || producto == null)
+            {
+                return NotFound(); // Manejar el caso donde el comprador o el producto no existen
+            }
+
+            // Suscribir al comprador como observador del producto
+            producto.AgregarObservador(comprador);
+            comprador.AgregarProductoGuardado(producto);
+            // Guardar el producto para más tarde (lógica adicional aquí)
+
+            return Ok();
+        }
+*/
+
+        [HttpPost("{idComprador}/agregar-producto/{idProducto}")]
+        public IActionResult AgregarProductoAGuardados(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.AgregarProductoAGuardados(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Producto agregado a la lista de deseos correctamente");
+        }
 
         [HttpPost("registroglobal")]
         public IActionResult RegistroGlobl(RegistroRequest request)

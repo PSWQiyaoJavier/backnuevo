@@ -1,5 +1,6 @@
 using backend.Services;
 using backend.Logica;
+using backend.DatosEnMemoria;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,5 +40,6 @@ app.UseCors(x => x
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();

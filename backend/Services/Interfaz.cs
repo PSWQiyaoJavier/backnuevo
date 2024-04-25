@@ -41,5 +41,7 @@ namespace backend.Services
         Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro);
         Task<bool> UsuarioCompradorExistePorApodo(string apodo);
         Task<UsuarioComprador> UserBuyerByNick(string filtro);
+        Task<List<UsuarioComprador>> GetAllBuyers();
+        Task<Producto> ProductById(int id);
     }
 }
