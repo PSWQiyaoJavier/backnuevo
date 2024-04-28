@@ -31,6 +31,7 @@ namespace backend.MetodoFabrica
         public void AgregarProductoGuardado(Producto producto)
         {
             Guardadoslista.Add(producto);
+            producto.AgregarObservador(this);
         }
 
         public void Actualizar()

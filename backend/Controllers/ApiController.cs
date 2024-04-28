@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Logica;
-using backend.DatosEnMemoria;
 using backend.MetodoFabrica;
 
 
@@ -206,6 +205,16 @@ namespace backend.Controllers
 
             // Devuelve una respuesta exitosa
             return Ok("Producto agregado a la lista de deseos correctamente");
+        }
+
+        [HttpPost("cambiarunidades")]
+        public IActionResult CambiarUnidades(int idProducto, int uni)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.ActualizarUnidades(idProducto, uni);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Producto actualizado correctamente");
         }
 
         [HttpPost("registroglobal")]

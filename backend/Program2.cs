@@ -1,6 +1,5 @@
 using backend.Services;
 using backend.Logica;
-using backend.DatosEnMemoria;
 
 var builder = WebApplication.CreateBuilder(args);
 

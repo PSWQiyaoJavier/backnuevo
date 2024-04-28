@@ -46,6 +46,7 @@ namespace backend.Logica
         Task InicializarDatosDesdeBD();
         Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto);
         void AgregarProductoAGuardados(int idComprador, int idProducto);
+        void ActualizarUnidades(int idProducto, int uni);
 
 
     }

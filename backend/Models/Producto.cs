@@ -47,5 +47,14 @@ namespace backend.Models
             }
         }
 
+        public void CambiarUnidades(int unidadesCompradas)
+        {
+            // Actualizar el número de unidades
+            this.Cantidad = Cantidad - unidadesCompradas;
+
+            // Notificar a los observadores (compradores) sobre el cambio de unidades
+            NotificarObservadores();
+        }
+
     }
 }

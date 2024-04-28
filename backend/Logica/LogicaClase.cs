@@ -2,7 +2,6 @@ using backend.Services;
 using backend.Models;
 using System.Collections.Generic;
 using backend.MetodoFabrica;
-using backend.DatosEnMemoria;
 
 namespace backend.Logica
 {
@@ -83,12 +82,12 @@ namespace backend.Logica
                 if (comprador != null && producto != null)
                 {
                     try{
-                        if (comprador.Guardadoslista == null)
+                        if(comprador.Guardadoslista == null)
                         {
                             comprador.Guardadoslista = new List<Producto>();
                         }
                         // Agregar el producto a la lista de deseos del comprador
-                        comprador.Guardadoslista.Add(producto);
+                        comprador.AgregarProductoGuardado(producto);
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -108,6 +107,32 @@ namespace backend.Logica
             
 
             
+        }
+
+        public void ActualizarUnidades(int idProducto, int uni)
+        {
+            if (_productos != null)
+            {
+                // Código para trabajar con los compradores y productos
+                // Obtener el comprador y el producto correspondientes
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+
+                if (producto != null)
+                {
+                    try{
+                        producto.CambiarUnidades(uni);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+
+                    // Actualizar los datos en la base de datos si es necesario
+                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
+                    // Por ejemplo, si estás utilizando un servicio de Supabase:
+                    //_supabaseService.ActualizarComprador(comprador);
+                }
+            }
+
         }
 
 
