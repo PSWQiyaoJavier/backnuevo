@@ -47,6 +47,8 @@ namespace backend.Logica
         Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto);
         void AgregarProductoAGuardados(int idComprador, int idProducto);
         void ActualizarUnidades(int idProducto, int uni);
+        void AgregarProductoACarrito(int idComprador, int idProducto);
+        void RealizarPedido(int idComprador);
 
 
     }

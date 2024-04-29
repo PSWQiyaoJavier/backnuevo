@@ -43,5 +43,6 @@ namespace backend.Services
         Task<UsuarioComprador> UserBuyerByNick(string filtro);
         Task<List<UsuarioComprador>> GetAllBuyers();
         Task<Producto> ProductById(int id);
+        Task InsertarObservador(Observador ob);
     }
 }

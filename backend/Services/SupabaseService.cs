@@ -317,6 +317,17 @@ namespace backend.Services
             Console.WriteLine("Carrito insertado correctamente en Supabase.");
         }
 
+        public async Task InsertarObservador(Observador ob)
+        {
+            
+
+            // Inserta el nuevo producto en la tabla correspondiente
+            await _supabaseClient
+                    .From<Observador>()
+                    .Insert(ob);
+            Console.WriteLine("Observador insertado correctamente en Supabase.");
+        }
+
         public async Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro)
         {
             var result = await _supabaseClient

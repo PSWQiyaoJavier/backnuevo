@@ -109,6 +109,86 @@ namespace backend.Logica
             
         }
 
+        public void AgregarProductoACarrito(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                // Código para trabajar con los compradores y productos
+                // Obtener el comprador y el producto correspondientes
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if(comprador.Carritolista == null)
+                        {
+                            comprador.Carritolista = new List<Producto>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.AgregarProductoCarrito(producto);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+
+                    // Actualizar los datos en la base de datos si es necesario
+                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
+                    // Por ejemplo, si estás utilizando un servicio de Supabase:
+                    //_supabaseService.ActualizarComprador(comprador);
+                }
+            }
+        }
+
+        public void AgregarProductoADeseos(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                // Código para trabajar con los compradores y productos
+                // Obtener el comprador y el producto correspondientes
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if(comprador.Deseoslista == null)
+                        {
+                            comprador.Deseoslista = new List<Producto>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.AgregarProductoDeseos(producto);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+
+                    // Actualizar los datos en la base de datos si es necesario
+                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
+                    // Por ejemplo, si estás utilizando un servicio de Supabase:
+                    //_supabaseService.ActualizarComprador(comprador);
+                }
+            }
+        }
+
+        public void RealizarPedido(int idComprador)
+        {
+            if (_compradores != null)
+            {
+                // Código para trabajar con los compradores y productos
+                // Obtener el comprador y el producto correspondientes
+                UsuarioComprador comprador = _compradores.FirstOrDefault(p => p.Id == idComprador);
+
+                if (comprador != null)
+                {
+                    Pedidopoo pedido = comprador.ConvertirCarritoEnPedido();
+                }
+
+            }
+        }
+
         public void ActualizarUnidades(int idProducto, int uni)
         {
             if (_productos != null)
@@ -190,7 +270,7 @@ namespace backend.Logica
             IList<Producto> allContents = ObtenerProductos();
 
             
-            allContents = allContents.Where(c => c.Nombre.Contains(keyWords)).ToList();
+            allContents = allContents.Where(c => c.Nombre.Replace('_', ' ').ToLower().Contains(keyWords)).ToList();
             
 
             return allContents.ToList();
@@ -420,6 +500,21 @@ namespace backend.Logica
             };
 
             interf.InsertarCarrito(nuevoElemento);
+            
+        }
+
+        public void AgregarObservador(int usuarioId, int productoId)
+        {
+            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
+            // Por ejemplo:
+            Observador nuevoElemento = new Observador
+            {
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
+
+            interf.InsertarObservador(nuevoElemento);
             
         }
 
