@@ -56,6 +56,22 @@ namespace backend.MetodoFabrica
             Deseoslista.Add(producto);
         }
 
+        public void EliminarProductoDeseos(Producto producto)
+        {
+            Deseoslista.Remove(producto);
+        }
+
+        public void EliminarProductoGuardados(Producto producto)
+        {
+            Guardadoslista.Remove(producto);
+            producto.EliminarObservador(this);
+        }
+
+        public void EliminarProductoCarrito(Producto producto)
+        {
+            Carritolista.Remove(producto);
+        }
+
         public Pedidopoo ConvertirCarritoEnPedido()
         {
             Pedidopoo pedido = new Pedidopoo(Carritolista, this);

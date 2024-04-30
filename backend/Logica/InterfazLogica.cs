@@ -47,11 +47,18 @@ namespace backend.Logica
         void AgregarProductoAGuardados(int idComprador, int idProducto);
         void ActualizarUnidades(int idProducto, int uni);
         void AgregarProductoACarrito(int idComprador, int idProducto);
+        void AgregarProductoADeseos(int idComprador, int idProducto);
         void RealizarPedido(int idComprador);
         IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
         List<Producto> PooGuardados(int userid);
         List<Producto> PooCarrito(int userid);
         List<Producto> PooDeseos(int userid);
+        void EliminarAlCarrito(int usuarioId, int productoId);
+        void EliminarAlGuardado(int usuarioId, int productoId);
+        void EliminarAlDeseo(int usuarioId, int productoId);
+        void EliminarProductoCarrito(int idComprador, int idProducto);
+        void EliminarProductoGuardado(int idComprador, int idProducto);
+        void EliminarProductoDeseo(int idComprador, int idProducto);
 
     }
 }

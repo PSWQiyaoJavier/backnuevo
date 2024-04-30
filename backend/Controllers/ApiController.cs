@@ -156,6 +156,48 @@ namespace backend.Controllers
             return Ok("Producto agregado al carrito correctamente");
         }
 
+        [HttpPost("agregar-producto-a-deseos")]
+        public IActionResult AgregarProductoADeseos(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.AgregarProductoADeseos(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Deseo agregado al carrito correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-deseos")]
+        public IActionResult EliminarProductoADeseos(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoDeseo(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Deseo eliminado correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-guardados")]
+        public IActionResult EliminarProductoAGuardados(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoGuardado(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Guardado eliminado correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-carrito")]
+        public IActionResult EliminarProductoACarrito(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoCarrito(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("carrito eliminado correctamente");
+        }
+
+        
+
         [HttpGet("obtener-carrito/{idComprador}")]
         public IActionResult ObtenerCarrito(int idComprador)
         {

@@ -38,7 +38,6 @@ namespace backend.Services
         Task InsertarUserFactory(UsuarioFabrica nuevouser);
         Task InsertarBuyerFactory(UsuarioComprador nuevouser);
         Task InsertarSellerFactory(UsuarioVendedor nuevouser);
-        Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro);
         Task<bool> UsuarioCompradorExistePorApodo(string apodo);
         Task<UsuarioComprador> UserBuyerByNick(string filtro);
         Task<List<UsuarioComprador>> GetAllBuyers();
@@ -47,5 +46,8 @@ namespace backend.Services
         Task<List<Listadeseos>> GetDeseos();
         Task InsertarDeseo(Listadeseos nuevodeseo);
         Task InsertarGuardado(Guardadoparamastarde nuevoguardado);
+        Task EliminarCarrito(CarritoCompra nuevocarrito);
+        Task EliminarGuardado(Guardadoparamastarde nuevocarrito);
+        Task EliminarDeseo(Listadeseos nuevocarrito);
     }
 }

@@ -82,11 +82,8 @@ namespace backend.Logica
         {
             if (_compradores != null && _productos != null)
             {
-                // Código para trabajar con los compradores y productos
-                // Obtener el comprador y el producto correspondientes
                 UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
                 Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
-
                 // Verificar si se encontraron el comprador y el producto
                 if (comprador != null && producto != null)
                 {
@@ -102,16 +99,6 @@ namespace backend.Logica
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
                     }
-
-                    // Actualizar los datos en la base de datos si es necesario
-                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
-                    // Por ejemplo, si estás utilizando un servicio de Supabase:
-                    //_supabaseService.ActualizarComprador(comprador);
-                }
-                else
-                {
-                    // Manejar el caso en el que no se encontró el comprador o el producto
-                    // Por ejemplo, lanzar una excepción o devolver un mensaje de error
                 }
             }
             
@@ -123,11 +110,8 @@ namespace backend.Logica
         {
             if (_compradores != null && _productos != null)
             {
-                // Código para trabajar con los compradores y productos
-                // Obtener el comprador y el producto correspondientes
                 UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
                 Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
-
                 // Verificar si se encontraron el comprador y el producto
                 if (comprador != null && producto != null)
                 {
@@ -143,11 +127,6 @@ namespace backend.Logica
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
                     }
-
-                    // Actualizar los datos en la base de datos si es necesario
-                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
-                    // Por ejemplo, si estás utilizando un servicio de Supabase:
-                    //_supabaseService.ActualizarComprador(comprador);
                 }
             }
         }
@@ -156,11 +135,8 @@ namespace backend.Logica
         {
             if (_compradores != null && _productos != null)
             {
-                // Código para trabajar con los compradores y productos
-                // Obtener el comprador y el producto correspondientes
                 UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
                 Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
-
                 // Verificar si se encontraron el comprador y el producto
                 if (comprador != null && producto != null)
                 {
@@ -176,11 +152,69 @@ namespace backend.Logica
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
                     }
+                }
+            }
+        }
 
-                    // Actualizar los datos en la base de datos si es necesario
-                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
-                    // Por ejemplo, si estás utilizando un servicio de Supabase:
-                    //_supabaseService.ActualizarComprador(comprador);
+        public void EliminarProductoCarrito(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoCarrito(producto);
+                        EliminarAlCarrito(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void EliminarProductoGuardado(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoGuardados(producto);
+                        EliminarAlGuardado(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void EliminarProductoDeseo(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoDeseos(producto);
+                        EliminarAlDeseo(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
                 }
             }
         }
@@ -765,6 +799,36 @@ namespace backend.Logica
 
             interf.InsertarGuardado(nuevoElemento);
             
+        }
+
+        public void EliminarAlCarrito(int usuarioId, int productoId)
+        {
+            CarritoCompra nuevoElemento = new CarritoCompra
+            {
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+            };
+            interf.EliminarCarrito(nuevoElemento);
+        }
+
+        public void EliminarAlGuardado(int usuarioId, int productoId)
+        {
+            Guardadoparamastarde nuevoElemento = new Guardadoparamastarde
+            {
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+            };
+            interf.EliminarGuardado(nuevoElemento);
+        }
+
+        public void EliminarAlDeseo(int usuarioId, int productoId)
+        {
+            Listadeseos nuevoElemento = new Listadeseos
+            {
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+            };
+            interf.EliminarDeseo(nuevoElemento);
         }
 
 

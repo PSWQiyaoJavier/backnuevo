@@ -359,19 +359,30 @@ namespace backend.Services
             Console.WriteLine("Guardado insertado correctamente en Supabase.");
         }
 
-
-        public async Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro)
+        public async Task EliminarCarrito(CarritoCompra nuevocarrito)
         {
-            var result = await _supabaseClient
-                                .From<UsuarioFabrica>()
-                                .Select("*,usuario:nick_name")
-                                .Where(x => x.Nick_name == filtro)
-                                .Get();
-            
-                                
-            UsuarioFabrica users = result.Model;
-            return users;                    
+            await _supabaseClient
+                    .From<CarritoCompra>()
+                    .Delete(nuevocarrito);
+            Console.WriteLine("Carrito eliminado correctamente en Supabase.");
         }
+
+        public async Task EliminarGuardado(Guardadoparamastarde nuevocarrito)
+        {
+            await _supabaseClient
+                    .From<Guardadoparamastarde>()
+                    .Delete(nuevocarrito);
+            Console.WriteLine("Guardado eliminado correctamente en Supabase.");
+        }
+
+        public async Task EliminarDeseo(Listadeseos nuevocarrito)
+        {
+            await _supabaseClient
+                    .From<Listadeseos>()
+                    .Delete(nuevocarrito);
+            Console.WriteLine("Deseo eliminado correctamente en Supabase.");
+        }
+
         
     }
 }
