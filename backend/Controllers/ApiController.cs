@@ -136,7 +136,7 @@ namespace backend.Controllers
         }
 
 
-        [HttpPost("agregar-producto-a-guardados")]
+        [HttpPost("agregar-producto-a-guardados/{idComprador}/{idProducto}")]
         public IActionResult AgregarProductoAGuardados(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -146,7 +146,7 @@ namespace backend.Controllers
             return Ok("Producto agregado a guardados correctamente");
         }
 
-        [HttpPost("agregar-producto-a-carrito")]
+        [HttpPost("agregar-producto-a-carrito/{idComprador}/{idProducto}")]
         public IActionResult AgregarProductoACarrito(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -156,7 +156,7 @@ namespace backend.Controllers
             return Ok("Producto agregado al carrito correctamente");
         }
 
-        [HttpPost("agregar-producto-a-deseos")]
+        [HttpPost("agregar-producto-a-deseos/{idComprador}/{idProducto}")]
         public IActionResult AgregarProductoADeseos(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -166,7 +166,7 @@ namespace backend.Controllers
             return Ok("Deseo agregado al carrito correctamente");
         }
 
-        [HttpPost("eliminar-producto-a-deseos")]
+        [HttpPost("eliminar-producto-a-deseos/{idComprador}/{idProducto}")]
         public IActionResult EliminarProductoADeseos(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -176,7 +176,7 @@ namespace backend.Controllers
             return Ok("Deseo eliminado correctamente");
         }
 
-        [HttpPost("eliminar-producto-a-guardados")]
+        [HttpPost("eliminar-producto-a-guardados/{idComprador}/{idProducto}")]
         public IActionResult EliminarProductoAGuardados(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -186,7 +186,7 @@ namespace backend.Controllers
             return Ok("Guardado eliminado correctamente");
         }
 
-        [HttpPost("eliminar-producto-a-carrito")]
+        [HttpPost("eliminar-producto-a-carrito/{idComprador}/{idProducto}")]
         public IActionResult EliminarProductoACarrito(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
@@ -238,11 +238,11 @@ namespace backend.Controllers
             return Ok("Producto actualizado correctamente");
         }
 
-        [HttpPost("registroglobal")]
-        public IActionResult RegistroGlobl(RegistroRequest request)
+        [HttpPost("registroglobal/{nombre}/{nick}/{password}/{email}/{edad}/{limitegasto}")]
+        public IActionResult RegistroGlobl(string nombre, string nick, string password, string email, int edad, int limitegasto)
         {
             
-            _logica.AddFabrica(request.Nombre, request.Nick, request.Password, request.Email, request.Edad, request.LimiteGasto);
+            _logica.AddFabrica(nombre, nick, password, email, edad, limitegasto);
             return Ok();
         }
 
