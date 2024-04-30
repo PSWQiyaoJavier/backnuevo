@@ -80,7 +80,7 @@ namespace backend.Controllers
             return Ok(productos);
         }
     
-        [HttpGet("login")]
+        [HttpGet("login/{nick}/{password}")]
         public IActionResult Login(string nick, string password)
         {
             var perfil =  _logica.LoginComprador2(nick, password);
