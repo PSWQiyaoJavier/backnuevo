@@ -59,6 +59,7 @@ namespace backend.Logica
         void EliminarProductoCarrito(int idComprador, int idProducto);
         void EliminarProductoGuardado(int idComprador, int idProducto);
         void EliminarProductoDeseo(int idComprador, int idProducto);
+        UsuarioComprador LoginComprador2(String nick, String password);
 
     }
 }

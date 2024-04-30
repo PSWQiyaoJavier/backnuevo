@@ -229,7 +229,7 @@ namespace backend.Logica
 
                 if (comprador != null)
                 {
-                    Pedidopoo pedido = comprador.ConvertirCarritoEnPedido();
+                    //Pedidopoo pedido = comprador.ConvertirCarritoEnPedido();
                 }
 
             }
@@ -668,6 +668,21 @@ namespace backend.Logica
             
             if (!user.Contraseña.Equals(password)) throw new ContraseñaIncorrectaException("Contraseña incorrecta");
             Console.WriteLine("UsuarioComprador con nick :" + user.Nick_name + " y contraseña :" + user.Contraseña + " logueado");
+        }
+
+        public UsuarioComprador LoginComprador2(String nick, String password)
+        {
+            if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
+
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Nick_name == nick && c.Contraseña == password);
+            if(comprador !=null){
+                Console.WriteLine("UsuarioComprador con nick :" + comprador.Nick_name + " y contraseña :" + comprador.Contraseña + " logueado");
+                return comprador;
+            }
+            else{
+                throw new ContraseñaIncorrectaException("Usuario o Contraseña incorrecta");
+            }
+            
         }
 
         public Usuario UserLogged()

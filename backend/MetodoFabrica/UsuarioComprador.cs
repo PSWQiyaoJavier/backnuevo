@@ -72,9 +72,9 @@ namespace backend.MetodoFabrica
             Carritolista.Remove(producto);
         }
 
-        public Pedidopoo ConvertirCarritoEnPedido()
+        public Pedidopoo ConvertirCarritoEnPedido(List<int> cantidades)
         {
-            Pedidopoo pedido = new Pedidopoo(Carritolista, this);
+            Pedidopoo pedido = new Pedidopoo(Carritolista,cantidades, this);
             Carritolista.Clear(); // Limpiar el carrito después de convertirlo en pedido
             Pedidospoo.Add(pedido); // Agregar el pedido a la lista de pedidos del comprador
             return pedido;

@@ -80,11 +80,11 @@ namespace backend.Controllers
             return Ok(productos);
         }
     
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        [HttpGet("login")]
+        public IActionResult Login(string nick, string password)
         {
-            _logica.Login(request.Nick, request.Password);
-            return Ok();
+            var perfil =  _logica.LoginComprador2(nick, password);
+            return Ok(perfil);
         }
 
         [HttpPost("login2")]
