@@ -44,12 +44,14 @@ namespace backend.Logica
         UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);
         IList<UsuarioComprador> ObtenerCompradores();
         Task InicializarDatosDesdeBD();
-        Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto);
         void AgregarProductoAGuardados(int idComprador, int idProducto);
         void ActualizarUnidades(int idProducto, int uni);
         void AgregarProductoACarrito(int idComprador, int idProducto);
         void RealizarPedido(int idComprador);
-
+        IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
+        List<Producto> PooGuardados(int userid);
+        List<Producto> PooCarrito(int userid);
+        List<Producto> PooDeseos(int userid);
 
     }
 }

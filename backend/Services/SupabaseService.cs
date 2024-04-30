@@ -112,6 +112,26 @@ namespace backend.Services
             return productos1;
         }
 
+        public async Task<List<Guardadoparamastarde>> GetGuardados()
+        {
+            var productos = await _supabaseClient
+                                .From<Guardadoparamastarde>()
+                                .Get();
+
+            List <Guardadoparamastarde> productos1 = productos.Models;
+            return productos1;
+        }
+
+        public async Task<List<Listadeseos>> GetDeseos()
+        {
+            var productos = await _supabaseClient
+                                .From<Listadeseos>()
+                                .Get();
+
+            List <Listadeseos> productos1 = productos.Models;
+            return productos1;
+        }
+
 
         public async Task<List<UsuarioFabrica>> GetAllUsers()
         {
@@ -317,16 +337,28 @@ namespace backend.Services
             Console.WriteLine("Carrito insertado correctamente en Supabase.");
         }
 
-        public async Task InsertarObservador(Observador ob)
+        public async Task InsertarDeseo(Listadeseos nuevodeseo)
         {
             
 
             // Inserta el nuevo producto en la tabla correspondiente
             await _supabaseClient
-                    .From<Observador>()
-                    .Insert(ob);
-            Console.WriteLine("Observador insertado correctamente en Supabase.");
+                    .From<Listadeseos>()
+                    .Insert(nuevodeseo);
+            Console.WriteLine("Deseo insertado correctamente en Supabase.");
         }
+
+        public async Task InsertarGuardado(Guardadoparamastarde nuevoguardado)
+        {
+            
+
+            // Inserta el nuevo producto en la tabla correspondiente
+            await _supabaseClient
+                    .From<Guardadoparamastarde>()
+                    .Insert(nuevoguardado);
+            Console.WriteLine("Guardado insertado correctamente en Supabase.");
+        }
+
 
         public async Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro)
         {

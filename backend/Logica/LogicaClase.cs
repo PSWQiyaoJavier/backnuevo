@@ -2,6 +2,7 @@ using backend.Services;
 using backend.Models;
 using System.Collections.Generic;
 using backend.MetodoFabrica;
+using backend.PatronObservador;
 
 namespace backend.Logica
 {
@@ -44,8 +45,13 @@ namespace backend.Logica
                     Precio = datosProducto.Precio
                     // Puedes agregar más propiedades si es necesario
                 };
-
+                List<IObservador> compradores = ObtenerCompradoresGuardados(producto);
+                foreach (IObservador comprador in compradores)
+                {
+                    producto.AgregarObservador(comprador);
+                }
                 _productos.Add(producto);
+
             }
 
             foreach (var datosComprador in datosCompradores)
@@ -63,6 +69,9 @@ namespace backend.Logica
                     Guardadoslista = datosComprador.Guardadoslista
                     // Puedes agregar más propiedades si es necesario
                 };
+                comprador.Carritolista = ObtenerProductosCarrito(comprador);
+                comprador.Deseoslista = ObtenerProductosDeseos(comprador);
+                comprador.Guardadoslista = ObtenerProductosGuardados(comprador);
 
                 _compradores.Add(comprador);
             }
@@ -88,6 +97,7 @@ namespace backend.Logica
                         }
                         // Agregar el producto a la lista de deseos del comprador
                         comprador.AgregarProductoGuardado(producto);
+                        AgregarAGuardados(comprador.Id,producto.Id);
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -128,6 +138,7 @@ namespace backend.Logica
                         }
                         // Agregar el producto a la lista de deseos del comprador
                         comprador.AgregarProductoCarrito(producto);
+                        AgregarAlCarrito(comprador.Id,producto.Id);
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -160,6 +171,7 @@ namespace backend.Logica
                         }
                         // Agregar el producto a la lista de deseos del comprador
                         comprador.AgregarProductoDeseos(producto);
+                        AgregarADeseos(comprador.Id,producto.Id);
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -216,6 +228,132 @@ namespace backend.Logica
         }
 
 
+        public List<Producto> PooGuardados(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Guardadoslista;
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+        public List<Producto> PooCarrito(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Carritolista;
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+        public List<Producto> PooDeseos(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Deseoslista;
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+
+
+        public List<Producto> ObtenerProductosCarrito(UsuarioComprador perfil)
+        {
+            var user = GetChartByUserBuyer(perfil);
+            var productos = new List<Producto>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByChart(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+
+
+        public List<Producto> ObtenerProductosGuardados(UsuarioComprador perfil)
+        {
+            var user = GetGuardadosByUserBuyer(perfil);
+            var productos = new List<Producto>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByGuardados(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+        public List<Producto> ObtenerProductosDeseos(UsuarioComprador perfil)
+        {
+            var user = GetDeseosByUserBuyer(perfil);
+            var productos = new List<Producto>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByDeseos(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+
+        public List<IObservador> ObtenerCompradoresGuardados(Producto perfil)
+        {
+            var user = GetUserBuyerByProducto(perfil);
+            var productos = new List<IObservador>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetBuyerByGuardados(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+
         public IList<Producto> ObtenerProductos()
         {
             var productosTask = interf.GetAllProducts(); // Obtiene la tarea para obtener todos los productos
@@ -231,6 +369,24 @@ namespace backend.Logica
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
             List<CarritoCompra> productos1 = productosTask.Result;
+            return productos1;
+        }
+
+        public IList<Guardadoparamastarde> ObtenerGuardados()
+        {
+            var productosTask = interf.GetGuardados(); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            List<Guardadoparamastarde> productos1 = productosTask.Result;
+            return productos1;
+        }
+
+        public IList<Listadeseos> ObtenerDeseos()
+        {
+            var productosTask = interf.GetDeseos(); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            List<Listadeseos> productos1 = productosTask.Result;
             return productos1;
         }
 
@@ -303,7 +459,85 @@ namespace backend.Logica
             return allContents.ToList();
         }
 
+        public IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<Guardadoparamastarde> allContents = ObtenerGuardados();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Guardadoparamastarde> GetUserBuyerByProducto(Producto user)
+        {
+            
+
+            IList<Guardadoparamastarde> allContents = ObtenerGuardados();
+
+            
+            allContents = allContents.Where(c => c.Id_producto==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Listadeseos> GetDeseosByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<Listadeseos> allContents = ObtenerDeseos();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
         public IList<Producto> GetProductByChart(CarritoCompra carr)
+        {
+            
+
+            IList<Producto> allContents = ObtenerProductos();
+
+            
+            allContents = allContents.Where(c => c.Id==carr.Id_producto).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Producto> GetProductByGuardados(Guardadoparamastarde carr)
+        {
+            
+
+            IList<Producto> allContents = ObtenerProductos();
+
+            
+            allContents = allContents.Where(c => c.Id==carr.Id_producto).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<UsuarioComprador> GetBuyerByGuardados(Guardadoparamastarde carr)
+        {
+            
+
+            IList<UsuarioComprador> allContents = ObtenerCompradores();
+
+            
+            allContents = allContents.Where(c => c.Id==carr.Id_comprador).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Producto> GetProductByDeseos(Listadeseos carr)
         {
             
 
@@ -503,44 +737,39 @@ namespace backend.Logica
             
         }
 
-        public void AgregarObservador(int usuarioId, int productoId)
+        public void AgregarADeseos(int usuarioId, int productoId)
         {
             // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
             // Por ejemplo:
-            Observador nuevoElemento = new Observador
+            Listadeseos nuevoElemento = new Listadeseos
             {
                 Id_comprador = usuarioId,
                 Id_producto = productoId
                 // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
             };
 
-            interf.InsertarObservador(nuevoElemento);
+            interf.InsertarDeseo(nuevoElemento);
             
         }
 
-        public void AddProductToCart(UsuarioComprador buyer, Producto product)
+        public void AgregarAGuardados(int usuarioId, int productoId)
         {
-            buyer.Carritolista.Add(product);
-        }
-
-        public async Task GuardarProductoParaMasTarde(string nickcomprador, int idProducto)
-        {
-            UsuarioComprador comprador = ObtenerUsuarioCompradorPorNick(nickcomprador);
-            Producto producto = ObtenerProductoPorId(idProducto);
-
-            if (comprador == null || producto == null)
+            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
+            // Por ejemplo:
+            Guardadoparamastarde nuevoElemento = new Guardadoparamastarde
             {
-                // Manejar el caso donde el comprador o el producto no existen
-                return;
-            }
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
 
-            // Suscribir al comprador como observador del producto
-            producto.AgregarObservador(comprador);
-            comprador.AgregarProductoGuardado(producto);
-
-            // Guardar el producto para más tarde (lógica adicional aquí)
+            interf.InsertarGuardado(nuevoElemento);
+            
         }
 
+
+
+       
     }
 
 }

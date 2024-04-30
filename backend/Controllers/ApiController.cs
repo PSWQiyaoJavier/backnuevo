@@ -156,6 +156,36 @@ namespace backend.Controllers
             return Ok("Producto agregado al carrito correctamente");
         }
 
+        [HttpGet("obtener-carrito/{idComprador}")]
+        public IActionResult ObtenerCarrito(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooCarrito(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
+        }
+
+        [HttpGet("obtener-guardados/{idComprador}")]
+        public IActionResult ObtenerGuardados(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooGuardados(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
+        }
+
+        [HttpGet("obtener-deseos/{idComprador}")]
+        public IActionResult ObtenerDeseos(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooDeseos(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
+        }
+
         [HttpPost("cambiarunidades")]
         public IActionResult CambiarUnidades(int idProducto, int uni)
         {

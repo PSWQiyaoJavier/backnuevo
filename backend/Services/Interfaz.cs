@@ -43,6 +43,9 @@ namespace backend.Services
         Task<UsuarioComprador> UserBuyerByNick(string filtro);
         Task<List<UsuarioComprador>> GetAllBuyers();
         Task<Producto> ProductById(int id);
-        Task InsertarObservador(Observador ob);
+        Task<List<Guardadoparamastarde>> GetGuardados();
+        Task<List<Listadeseos>> GetDeseos();
+        Task InsertarDeseo(Listadeseos nuevodeseo);
+        Task InsertarGuardado(Guardadoparamastarde nuevoguardado);
     }
 }

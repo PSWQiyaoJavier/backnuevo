@@ -26,7 +26,7 @@ namespace backend.Models
         [Column("precio")]
         public float Precio { get; set; }
 
-
+    
         private List<IObservador> observadores = new List<IObservador>();
 
         public void AgregarObservador(IObservador observador)
