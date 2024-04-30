@@ -42,7 +42,10 @@ namespace backend.Logica
                     Categoria = datosProducto.Categoria,
                     Descripcion = datosProducto.Descripcion,
                     Cantidad = datosProducto.Cantidad,
-                    Precio = datosProducto.Precio
+                    Precio = datosProducto.Precio,
+                    Foto1 = datosProducto.Foto1,
+                    Foto2 = datosProducto.Foto2,
+                    Foto3 = datosProducto.Foto3
                     // Puedes agregar más propiedades si es necesario
                 };
                 List<IObservador> compradores = ObtenerCompradoresGuardados(producto);
