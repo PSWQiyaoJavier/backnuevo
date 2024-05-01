@@ -3,6 +3,8 @@ using backend.Models;
 using System.Collections.Generic;
 using backend.MetodoFabrica;
 using backend.PatronObservador;
+using System.Runtime.InteropServices;
+using backend.ModelsSupabase;
 
 namespace backend.Logica
 {
@@ -72,7 +74,7 @@ namespace backend.Logica
                     Guardadoslista = datosComprador.Guardadoslista
                     // Puedes agregar más propiedades si es necesario
                 };
-                comprador.Carritolista = ObtenerProductosCarrito(comprador);
+                //.Carritolista = ObtenerProductosCarrito(comprador);
                 comprador.Deseoslista = ObtenerProductosDeseos(comprador);
                 comprador.Guardadoslista = ObtenerProductosGuardados(comprador);
 
@@ -104,12 +106,9 @@ namespace backend.Logica
                     }
                 }
             }
-            
-
-            
         }
 
-        public void AgregarProductoACarrito(int idComprador, int idProducto)
+        public void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades)
         {
             if (_compradores != null && _productos != null)
             {
@@ -121,11 +120,11 @@ namespace backend.Logica
                     try{
                         if(comprador.Carritolista == null)
                         {
-                            comprador.Carritolista = new List<Producto>();
+                            comprador.Carritolista = new Dictionary<Producto, int>();
                         }
                         // Agregar el producto a la lista de deseos del comprador
-                        comprador.AgregarProductoCarrito(producto);
-                        AgregarAlCarrito(comprador.Id,producto.Id);
+                        comprador.AgregarProductoCarrito(producto, cantidades);
+                        //AgregarAlCarrito(comprador.Id,producto.Id, cantidades);
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -171,7 +170,7 @@ namespace backend.Logica
                     try{
                         // Agregar el producto a la lista de deseos del comprador
                         comprador.EliminarProductoCarrito(producto);
-                        EliminarAlCarrito(comprador.Id,producto.Id); 
+                        //EliminarAlCarrito(comprador.Id,producto.Id); 
                     }catch(Exception ex){
                         Console.WriteLine("Error : " + ex.Message);
                     throw; // Lanza la excepción para propagarla hacia arriba
@@ -226,42 +225,74 @@ namespace backend.Logica
         {
             if (_compradores != null)
             {
-                // Código para trabajar con los compradores y productos
-                // Obtener el comprador y el producto correspondientes
                 UsuarioComprador comprador = _compradores.FirstOrDefault(p => p.Id == idComprador);
-
                 if (comprador != null)
                 {
-                    //Pedidopoo pedido = comprador.ConvertirCarritoEnPedido();
+                    Pedidopoo ped = comprador.RealizarPedido();
+                    //ActualizarUnidadesBD(ped);
+                    int random1 = PedidoBD(comprador.Id);
+                    PedidoProductoBD(comprador.Id,random1);
                 }
-
             }
         }
 
-        public void ActualizarUnidades(int idProducto, int uni)
+        public int PedidoBD(int idComprador)
         {
-            if (_productos != null)
+            int randomnumber = GenerarIdUnico();
+            PedidopooBD nuevoElemento = new PedidopooBD
             {
-                // Código para trabajar con los compradores y productos
-                // Obtener el comprador y el producto correspondientes
-                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                Id_comprador = idComprador,
+                RandomId = randomnumber
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
+            interf.InsertarPedido(nuevoElemento);  
+            return randomnumber;
+        }
 
-                if (producto != null)
+        public async void PedidoProductoBD(int idComprador, int random1)
+        {
+            PedidopooBD ped = await interf.PedidoByRandom(random1);
+            UsuarioComprador comprador = _compradores.FirstOrDefault(p => p.Id == idComprador);
+            foreach (var productopedido in comprador.Carritolista)
+            {
+                PedidoProductoBD nuevoElemento = new PedidoProductoBD
                 {
-                    try{
-                        producto.CambiarUnidades(uni);
-                    }catch(Exception ex){
-                        Console.WriteLine("Error : " + ex.Message);
-                    throw; // Lanza la excepción para propagarla hacia arriba
-                    }
-
-                    // Actualizar los datos en la base de datos si es necesario
-                    // Puedes utilizar los métodos de persistencia para realizar esta actualización
-                    // Por ejemplo, si estás utilizando un servicio de Supabase:
-                    //_supabaseService.ActualizarComprador(comprador);
-                }
+                    Id_pedido = ped.Id,
+                    Id_Producto = productopedido.Key.Id,
+                    Cantidad = productopedido.Value
+                    // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+                };
+                interf.InsertarPedidoproducto(nuevoElemento);
             }
 
+            
+            comprador.Carritolista.Clear();
+            
+        }
+
+        private int GenerarIdUnico()
+        {
+            // Aquí se genera un ID único provisional para el pedido (puede ser una implementación simple basada en un contador o un UUID)
+            return new Random().Next(1000, 9999);
+        }
+
+        public void ActualizarUnidadesBD(Pedidopoo ped)
+        {
+            try{
+                foreach (var productoPedido in ped.Productos)
+                    {
+                        Producto producto = productoPedido.Producto;
+                        int cantidadComprada = productoPedido.Cantidad;
+
+                        // Restar la cantidad comprada del inventario del producto
+                        interf.UpdateCantidadProducto(producto,cantidadComprada);
+                        
+                    }
+                }catch(Exception ex){
+                Console.WriteLine("Error : " + ex.Message);
+            throw; // Lanza la excepción para propagarla hacia arriba
+            }
+            
         }
 
 
@@ -281,7 +312,7 @@ namespace backend.Logica
 
         }
 
-        public List<Producto> PooCarrito(int userid)
+        public Dictionary<Producto,int> PooCarrito(int userid)
         {
             UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
             if (comprador !=null)
@@ -314,11 +345,11 @@ namespace backend.Logica
         }
 
 
-
+/*
         public List<Producto> ObtenerProductosCarrito(UsuarioComprador perfil)
         {
             var user = GetChartByUserBuyer(perfil);
-            var productos = new List<Producto>();
+            var productos = new Dictionary<Producto, int>();
 
             // Para cada carrito en la lista de carritos
             foreach(var product in user)
@@ -327,13 +358,13 @@ namespace backend.Logica
                 var productItems = GetProductByChart(product);
                 
                 // Agregar los artículos a la lista de items
-                productos.AddRange(productItems);
+                productos.Add(productItems);
             }
             return productos;
 
         }
 
-
+*/
 
         public List<Producto> ObtenerProductosGuardados(UsuarioComprador perfil)
         {
@@ -774,14 +805,15 @@ namespace backend.Logica
 
 
 
-        public void AgregarAlCarrito(int usuarioId, int productoId)
+        public void AgregarAlCarrito(int usuarioId, int productoId, int cantidad)
         {
             // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
             // Por ejemplo:
             CarritoCompra nuevoElemento = new CarritoCompra
             {
                 Id_comprador = usuarioId,
-                Id_producto = productoId
+                Id_producto = productoId,
+                Cantidad = cantidad
                 // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
             };
 

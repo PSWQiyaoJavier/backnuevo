@@ -14,6 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using backend.Models;
 using Postgrest.Models;
 using backend.MetodoFabrica;
+using backend.ModelsSupabase;
 
 namespace backend.Services
 {
@@ -49,5 +50,9 @@ namespace backend.Services
         Task EliminarCarrito(CarritoCompra nuevocarrito);
         Task EliminarGuardado(Guardadoparamastarde nuevocarrito);
         Task EliminarDeseo(Listadeseos nuevocarrito);
+        Task InsertarPedido(PedidopooBD nuevopedido);
+        Task<PedidopooBD> PedidoByRandom(int filtro);
+        Task InsertarPedidoproducto(PedidoProductoBD nuevopedido);
+        Task<Producto> UpdateCantidadProducto(Producto prod,int cant);
     }
 }

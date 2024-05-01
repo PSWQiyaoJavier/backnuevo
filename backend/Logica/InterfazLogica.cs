@@ -30,7 +30,7 @@ namespace backend.Logica
 
         Usuario ObtenerUsuarioPorEdad(int edad);
         Usuario UpdateEdadUsuario(Usuario usuario,int edad);
-        void AgregarAlCarrito(int usuarioId, int productoId);
+        void AgregarAlCarrito(int usuarioId, int productoId, int cantidad);
 
         IList<CarritoCompra> GetChartByUser(Usuario user);
         IList<CarritoCompra> ObtenerChart();
@@ -45,13 +45,13 @@ namespace backend.Logica
         IList<UsuarioComprador> ObtenerCompradores();
         Task InicializarDatosDesdeBD();
         void AgregarProductoAGuardados(int idComprador, int idProducto);
-        void ActualizarUnidades(int idProducto, int uni);
-        void AgregarProductoACarrito(int idComprador, int idProducto);
+        void ActualizarUnidadesBD(Pedidopoo ped);
+        void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades);        
         void AgregarProductoADeseos(int idComprador, int idProducto);
         void RealizarPedido(int idComprador);
         IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
         List<Producto> PooGuardados(int userid);
-        List<Producto> PooCarrito(int userid);
+        Dictionary<Producto,int> PooCarrito(int userid);
         List<Producto> PooDeseos(int userid);
         void EliminarAlCarrito(int usuarioId, int productoId);
         void EliminarAlGuardado(int usuarioId, int productoId);

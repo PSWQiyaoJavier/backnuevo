@@ -1,23 +1,42 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 using backend.MetodoFabrica;
+using backend.Logica;
 
 namespace backend.Models
 {   
-   
+    [Table("pedido")]    
     public class Pedidopoo : BaseModel
         {
-            public List<Producto> Productos { get; set; }
-            public List<int> Cantidades { get; set; }
-            public DateTime Fecha { get; set; }
-            public UsuarioComprador Comprador { get; set; }
+            [PrimaryKey]
+            [Column("id")]
+            public int Id { get; set; }
 
-            public Pedidopoo(List<Producto> productos, List<int> cantidades, UsuarioComprador comprador)
+            [Column("id_comprador")]
+            public int Id_comprador { get; set; }
+
+            public List<PedidoProducto> Productos { get; set; }
+
+            public Pedidopoo()
             {
-                Productos = productos;
-                Cantidades = cantidades;
-                Fecha = DateTime.Now;
-                Comprador = comprador;
+                Productos = new List<PedidoProducto>();
             }
+
+            public void RestarCantidadProductosDeInventario()
+            {
+                foreach (var productoPedido in Productos)
+                {
+                    Producto producto = productoPedido.Producto;
+                    int cantidadComprada = productoPedido.Cantidad;
+
+                    // Restar la cantidad comprada del inventario del producto
+                    producto.CambiarUnidades(cantidadComprada);
+                    
+                }
+            }
+    
+
+
+
         }
 }

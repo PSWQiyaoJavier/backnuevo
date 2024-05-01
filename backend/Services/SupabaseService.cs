@@ -11,6 +11,8 @@ using backend.Models;
 using Postgrest.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using backend.MetodoFabrica;
+using Postgrest.Attributes;
+using backend.ModelsSupabase;
 
 namespace backend.Services
 {
@@ -49,6 +51,40 @@ namespace backend.Services
                 .From<Producto>()
                 .Insert(nuevoProducto);
             Console.WriteLine("Producto insertado correctamente en Supabase.");
+        }
+
+        public async Task InsertarPedido(PedidopooBD nuevopedido)
+        {
+            
+            try{
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                    .From<PedidopooBD>()
+                    .Insert(nuevopedido);
+                Console.WriteLine("Pedido insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar pedido en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+        }
+
+        public async Task InsertarPedidoproducto(PedidoProductoBD nuevopedido)
+        {
+            
+            try{
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                    .From<PedidoProductoBD>()
+                    .Insert(nuevopedido);
+                Console.WriteLine("Producto en pedido insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar producto en pedido en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
         }
 
         public async Task<List<Producto>> GetProductsById(int y)
@@ -157,6 +193,18 @@ namespace backend.Services
             Usuario users = result.Model;
             return users;                    
         }
+
+        public async Task<PedidopooBD> PedidoByRandom(int filtro)
+        {
+            var result = await _supabaseClient
+                                .From<PedidopooBD>()
+                                .Where(x => x.RandomId == filtro)
+                                .Get();
+            
+                                
+            PedidopooBD users = result.Model;
+            return users;                    
+        }
         public async Task<UsuarioComprador> UserBuyerByNick(string filtro)
         {
             var result = await _supabaseClient
@@ -238,12 +286,23 @@ namespace backend.Services
 
         public async Task InsertarBuyerFactory(UsuarioComprador nuevouser)
         {
+
             
             try{
+
+                UsuarioCompradorBD nuevo = new UsuarioCompradorBD{
+                    Id= nuevouser.Id,
+                    Nombre= nuevouser.Nombre,
+                    Nick_name= nuevouser.Nick_name,
+                    Contraseña= nuevouser.Contraseña,
+                    Email= nuevouser.Email,
+                    Edad= nuevouser.Edad,
+                    Limite_gasto_cents_mes= nuevouser.Limite_gasto_cents_mes
+                };
                 // Inserta el nuevo producto en la tabla correspondiente
                 await _supabaseClient
-                        .From<UsuarioComprador>()
-                        .Insert(nuevouser);
+                        .From<UsuarioCompradorBD>()
+                        .Insert(nuevo);
                 Console.WriteLine("Compradorfactory insertado correctamente en Supabase.");
             }
             catch (Exception ex)
@@ -324,6 +383,24 @@ namespace backend.Services
                     .Update();
 
             return usuario;
+        }
+
+        public async Task<Producto> UpdateCantidadProducto(Producto prod,int cant)
+        {
+            try{
+                await _supabaseClient
+                        .From<Producto>()
+                        .Where(x => x.Id == prod.Id)
+                        .Set(x => x.Cantidad, prod.Cantidad - cant)
+                        .Update();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error actualizar cantidad de producto en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+
+            return prod;
         }
 
         public async Task InsertarCarrito(CarritoCompra nuevocarrito)

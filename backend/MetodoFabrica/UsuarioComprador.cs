@@ -15,7 +15,7 @@ namespace backend.MetodoFabrica
 
 
 
-        public List<Producto> Carritolista { get; set; }
+        public Dictionary<Producto, int> Carritolista { get; set; }
 
         public List<Producto> Guardadoslista { get; set;}
 
@@ -46,9 +46,16 @@ namespace backend.MetodoFabrica
             Console.WriteLine("Un producto de la lista guardados para más tarde ha sido actualizado. Deberías tomar alguna acción " + Nombre);
         }
 
-        public void AgregarProductoCarrito(Producto producto)
+        public void AgregarProductoCarrito(Producto producto, int cantidad)
         {
-            Carritolista.Add(producto);
+            if (Carritolista.ContainsKey(producto))
+            {
+                Carritolista[producto] += cantidad; // Si el producto ya está en el carrito, se incrementa la cantidad
+            }
+            else
+            {
+                Carritolista.Add(producto, cantidad); // Si es un producto nuevo, se agrega al carrito con la cantidad
+            }
         }
 
         public void AgregarProductoDeseos(Producto producto)
@@ -69,23 +76,56 @@ namespace backend.MetodoFabrica
 
         public void EliminarProductoCarrito(Producto producto)
         {
-            Carritolista.Remove(producto);
+            if(Carritolista.ContainsKey(producto))
+            {
+                Carritolista.Remove(producto);
+            }
+            
         }
 
-        public Pedidopoo ConvertirCarritoEnPedido(List<int> cantidades)
+        public void ModificarCantidadEnCarrito(Producto producto, int nuevaCantidad)
         {
-            Pedidopoo pedido = new Pedidopoo(Carritolista,cantidades, this);
-            Carritolista.Clear(); // Limpiar el carrito después de convertirlo en pedido
-            Pedidospoo.Add(pedido); // Agregar el pedido a la lista de pedidos del comprador
-            return pedido;
+            if (Carritolista.ContainsKey(producto))
+            {
+                Carritolista[producto] = nuevaCantidad;
+            }
         }
 
-        // Métodos para manejar la lista de guardados...
-
-        // Métodos para manejar la lista de pedidos...
-        public void AgregarPedido(Pedidopoo pedido)
+        public Dictionary<Producto, int> ObtenerCarrito()
         {
-            Pedidospoo.Add(pedido);
+            return Carritolista;
+        }
+
+        public Pedidopoo ConvertirCarritoEnPedido()
+        {
+            Pedidopoo pedido = new Pedidopoo();
+            pedido.Id_comprador = this.Id;
+            foreach (var item in Carritolista)
+            {
+                pedido.Productos.Add(new PedidoProducto
+                {
+                    Producto = item.Key,
+                    Cantidad = item.Value
+                });
+            }
+        return pedido;
+        }
+        public Pedidopoo RealizarPedido()
+        {
+            if (Carritolista.Count > 0)
+            {
+                // Convertir el carrito en un pedido
+                Pedidopoo pedido = ConvertirCarritoEnPedido();
+                if(Pedidospoo == null)
+                {
+                    Pedidospoo = new List<Pedidopoo>();
+                }
+                Pedidospoo.Add(pedido);
+                pedido.RestarCantidadProductosDeInventario();
+                return pedido;
+                //Carritolista.Clear();
+            }
+            return null;
         }
 
         public List<Pedidopoo> ObtenerPedidos()

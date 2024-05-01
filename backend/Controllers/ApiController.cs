@@ -17,29 +17,8 @@ namespace backend.Controllers
             this._logica = logica;
         }
 
-        [HttpPost("carrito")]
-        public IActionResult AgregarAlCarrito([FromBody] CarritoCompraRequest request)
-        {
-            // Obtener el usuario logueado
-            var user = _logica.UserLogged();
 
-            // Verificar si el usuario está autenticado
-            if (user == null)
-            {
-                // El usuario no está autenticado, puedes devolver un error o redirigir a la página de inicio de sesión
-                return Unauthorized();
-            }
-            var userId = user.Id;
-            _logica.AgregarAlCarrito(userId, request.ProductId);
-            return Ok();
-        }
 
-        [HttpPost("carritomanual")]
-        public IActionResult AgregarAlCarritoManual([FromBody] CarritoCompraRequest2 request)
-        {
-            _logica.AgregarAlCarrito(request.UserId, request.ProductId);
-            return Ok();
-        }
 
         [HttpGet("userlogged")]
         public IActionResult ObtenerUsuarioLogueado()
@@ -146,14 +125,24 @@ namespace backend.Controllers
             return Ok("Producto agregado a guardados correctamente");
         }
 
-        [HttpPost("agregar-producto-a-carrito/{idComprador}/{idProducto}")]
-        public IActionResult AgregarProductoACarrito(int idComprador, int idProducto)
+        [HttpPost("agregar-producto-a-carrito/{idComprador}/{idProducto}/{cantidad}")]
+        public IActionResult AgregarProductoACarrito(int idComprador, int idProducto, int cantidad)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.AgregarProductoACarrito(idComprador, idProducto);
+            _logica.AgregarProductoACarrito(idComprador, idProducto,cantidad);
 
             // Devuelve una respuesta exitosa
             return Ok("Producto agregado al carrito correctamente");
+        }
+
+        [HttpPost("realizar-pedido/{idComprador}")]
+        public IActionResult RealizarPedido(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.RealizarPedido(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok();
         }
 
         [HttpPost("agregar-producto-a-deseos/{idComprador}/{idProducto}")]
@@ -228,15 +217,6 @@ namespace backend.Controllers
             return Ok(lista);
         }
 
-        [HttpPost("cambiarunidades")]
-        public IActionResult CambiarUnidades(int idProducto, int uni)
-        {
-            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.ActualizarUnidades(idProducto, uni);
-
-            // Devuelve una respuesta exitosa
-            return Ok("Producto actualizado correctamente");
-        }
 
         [HttpPost("registroglobal/{nombre}/{nick}/{password}/{email}/{edad}/{limitegasto}")]
         public IActionResult RegistroGlobl(string nombre, string nick, string password, string email, int edad, int limitegasto)

@@ -1,10 +1,10 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 
-namespace backend.Models
+namespace backend.ModelsSupabase
 {
     [Table("pedido_producto")]
-    public class PedidoProducto : BaseModel
+    public class PedidoProductoBD : BaseModel
     {
 
         [Column("id_pedido")]
@@ -15,8 +15,6 @@ namespace backend.Models
 
         [Column("cantidad")]
         public int Cantidad { get; set; }
-
-        public Producto Producto {get; set;}
 
     }
 }

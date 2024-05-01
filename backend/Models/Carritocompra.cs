@@ -15,5 +15,8 @@ namespace backend.Models
         [Column("id_producto")]
         public int Id_producto { get; set; }
 
+        [Column("cantidad")]
+        public int Cantidad { get; set; }
+
     }
 }
