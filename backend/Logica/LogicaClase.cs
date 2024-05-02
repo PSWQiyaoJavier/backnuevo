@@ -312,13 +312,13 @@ namespace backend.Logica
 
         }
 
-        public Dictionary<Producto,int> PooCarrito(int userid)
+        public List<(Producto,int)> PooCarrito(int userid)
         {
             UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
             if (comprador !=null)
             {
                 try{
-                    return comprador.Carritolista;
+                    return comprador.Carritolista.Select(kv => (kv.Key, kv.Value)).ToList();
                 }catch(Exception ex){
                     Console.WriteLine("Error : " + ex.Message);
                 }

@@ -51,7 +51,7 @@ namespace backend.Logica
         void RealizarPedido(int idComprador);
         IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
         List<Producto> PooGuardados(int userid);
-        Dictionary<Producto,int> PooCarrito(int userid);
+        List<(Producto,int)> PooCarrito(int userid);
         List<Producto> PooDeseos(int userid);
         void EliminarAlCarrito(int usuarioId, int productoId);
         void EliminarAlGuardado(int usuarioId, int productoId);
