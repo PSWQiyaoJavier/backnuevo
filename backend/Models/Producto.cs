@@ -45,7 +45,11 @@ namespace backend.Models
 
         public void EliminarObservador(IObservador observador)
         {
-            observadores.Remove(observador);
+            IObservador observadorAEliminar = observadores.FirstOrDefault(o => o.GetId() == observador.GetId());
+            if (observadorAEliminar != null)
+            {
+                observadores.Remove(observadorAEliminar);
+            }
         }
 
         public void NotificarObservadores()

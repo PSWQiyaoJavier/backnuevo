@@ -48,8 +48,8 @@ namespace backend.Services
         Task InsertarDeseo(Listadeseos nuevodeseo);
         Task InsertarGuardado(Guardadoparamastarde nuevoguardado);
         Task EliminarCarrito(CarritoCompra nuevocarrito);
-        Task EliminarGuardado(Guardadoparamastarde nuevocarrito);
-        Task EliminarDeseo(Listadeseos nuevocarrito);
+        Task EliminarGuardado(int usuarioId, int productoId);
+        Task EliminarDeseo(int usuarioId, int productoId);
         Task InsertarPedido(PedidopooBD nuevopedido);
         Task<PedidopooBD> PedidoByRandom(int filtro);
         Task InsertarPedidoproducto(PedidoProductoBD nuevopedido);

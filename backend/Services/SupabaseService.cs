@@ -444,20 +444,37 @@ namespace backend.Services
             Console.WriteLine("Carrito eliminado correctamente en Supabase.");
         }
 
-        public async Task EliminarGuardado(Guardadoparamastarde nuevocarrito)
+        public async Task EliminarGuardado(int usuarioId, int productoId)
         {
-            await _supabaseClient
+            try{
+                await _supabaseClient
                     .From<Guardadoparamastarde>()
-                    .Delete(nuevocarrito);
+                    .Where(x => x.Id_comprador == usuarioId && x.Id_producto == productoId)
+                    .Delete();
             Console.WriteLine("Guardado eliminado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error borrar producto en guardados en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
         }
+            
 
-        public async Task EliminarDeseo(Listadeseos nuevocarrito)
+        public async Task EliminarDeseo(int usuarioId, int productoId)
         {
-            await _supabaseClient
+            try{
+                await _supabaseClient
                     .From<Listadeseos>()
-                    .Delete(nuevocarrito);
-            Console.WriteLine("Deseo eliminado correctamente en Supabase.");
+                    .Where(x => x.Id_comprador == usuarioId && x.Id_producto == productoId)
+                    .Delete();
+            Console.WriteLine("Listadeseos eliminado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error borrar producto en listadeseos en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
         }
 
         

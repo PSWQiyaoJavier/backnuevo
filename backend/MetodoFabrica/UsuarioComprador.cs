@@ -65,13 +65,21 @@ namespace backend.MetodoFabrica
 
         public void EliminarProductoDeseos(Producto producto)
         {
-            Deseoslista.Remove(producto);
+            Producto productoAEliminar = Deseoslista.FirstOrDefault(p => p.Id == producto.Id);
+            if (productoAEliminar != null)
+            {
+                Deseoslista.Remove(productoAEliminar);
+            }
         }
 
         public void EliminarProductoGuardados(Producto producto)
         {
-            Guardadoslista.Remove(producto);
-            producto.EliminarObservador(this);
+            Producto productoAEliminar = Guardadoslista.FirstOrDefault(p => p.Id == producto.Id);
+            if (productoAEliminar != null)
+            {
+                Guardadoslista.Remove(productoAEliminar);
+                producto.EliminarObservador(this);
+            }
         }
 
         public void EliminarProductoCarrito(Producto producto)
@@ -80,6 +88,7 @@ namespace backend.MetodoFabrica
             {
                 Carritolista.Remove(producto);
             }
+            
             
         }
 
@@ -131,6 +140,11 @@ namespace backend.MetodoFabrica
         public List<Pedidopoo> ObtenerPedidos()
         {
             return Pedidospoo;
+        }
+
+        public int GetId()
+        {
+            return Id;
         }
     }
 }

@@ -863,22 +863,12 @@ namespace backend.Logica
 
         public void EliminarAlGuardado(int usuarioId, int productoId)
         {
-            Guardadoparamastarde nuevoElemento = new Guardadoparamastarde
-            {
-                Id_comprador = usuarioId,
-                Id_producto = productoId
-            };
-            interf.EliminarGuardado(nuevoElemento);
+            interf.EliminarGuardado(usuarioId, productoId);
         }
 
         public void EliminarAlDeseo(int usuarioId, int productoId)
         {
-            Listadeseos nuevoElemento = new Listadeseos
-            {
-                Id_comprador = usuarioId,
-                Id_producto = productoId
-            };
-            interf.EliminarDeseo(nuevoElemento);
+            interf.EliminarDeseo(usuarioId,productoId);
         }
 
 
