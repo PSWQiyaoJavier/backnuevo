@@ -1,0 +1,59 @@
+# Binarios generados
+backend\bin/
+backend\obj/
+
+# Carpetas de dependencias
+packages/
+node_modules/
+.nuget/
+
+# Archivos temporales
+*.log
+*.tmp
+
+# Archivos de configuración específicos del usuario
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+
+# Archivos de compilación y caché
+*.dll
+*.exe
+*.pdb
+*.cache
+*.csproj.user
+*.pdb
+*.ipch
+
+# Archivos de respaldo y temporales
+*~
+*.swp
+*.bak
+*.tmp
+
+# Archivos de generación de documentación
+_documentation/
+docfx_project/
+
+# Archivos de caché de ReSharper
+*_ReSharper*/
+*.[Rr]e[Ss]harper*
+
+# Archivos de IntelliCode
+.vs/
+.vscode/
+.vsconfig
+*.vsix
+.vscode-test/
+
+# Otros archivos de configuración de IDE
+*.launch
+*.vspscc
+*.vssscc
+obj/backend.csproj.nuget.dgspec.json
+obj/backend.csproj.nuget.g.props
+obj/project.assets.json
+obj/project.nuget.cache

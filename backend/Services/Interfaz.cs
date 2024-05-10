@@ -14,6 +14,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using backend.Models;
 using Postgrest.Models;
 using backend.MetodoFabrica;
+using backend.ModelsSupabase;
 
 namespace backend.Services
 {
@@ -23,7 +24,7 @@ namespace backend.Services
         Task<List<Producto>> GetProductsById(int y);
         Task EliminarProducto(Producto producto);
         Task<List<Producto>> GetAllProducts();
-        Task<List<Usuario>> GetAllUsers();
+        Task<List<UsuarioFabrica>> GetAllUsers();
         Task<Usuario> UserByNick(string filtro);
         Task InsertarUser(Usuario nuevouser);
         Task<bool> UsuarioExistePorApodo(string apodo);
@@ -34,12 +35,24 @@ namespace backend.Services
         Task<Producto> ProductByPrice(int filtro);
         Task InsertarBuyer(Comprador nuevobuyer);
         Task<List<CarritoCompra>> GetChart();
-        Task<List<Articulo>> GetAllArticles();
         Task Insert1<Comprador>(Comprador item) where Comprador : Usuario,new();
-        Task InsertarBuyerEnUsuarios(Comprador2 nuevouser);
         Task InsertarUserFactory(UsuarioFabrica nuevouser);
         Task InsertarBuyerFactory(UsuarioComprador nuevouser);
         Task InsertarSellerFactory(UsuarioVendedor nuevouser);
-        Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro);
+        Task<bool> UsuarioCompradorExistePorApodo(string apodo);
+        Task<UsuarioComprador> UserBuyerByNick(string filtro);
+        Task<List<UsuarioComprador>> GetAllBuyers();
+        Task<Producto> ProductById(int id);
+        Task<List<Guardadoparamastarde>> GetGuardados();
+        Task<List<Listadeseos>> GetDeseos();
+        Task InsertarDeseo(Listadeseos nuevodeseo);
+        Task InsertarGuardado(Guardadoparamastarde nuevoguardado);
+        Task EliminarCarrito(CarritoCompra nuevocarrito);
+        Task EliminarGuardado(int usuarioId, int productoId);
+        Task EliminarDeseo(int usuarioId, int productoId);
+        Task InsertarPedido(PedidopooBD nuevopedido);
+        Task<PedidopooBD> PedidoByRandom(int filtro);
+        Task InsertarPedidoproducto(PedidoProductoBD nuevopedido);
+        Task<Producto> UpdateCantidadProducto(Producto prod,int cant);
     }
 }

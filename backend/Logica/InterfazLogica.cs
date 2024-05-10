@@ -19,39 +19,47 @@ namespace backend.Logica
     public interface InterfazLogica
     {
         IList<Producto> ObtenerProductos();
-        IList<Usuario> ObtenerUsuarios();
-        IList<Usuario> ObtenerUsuarios2();
+        IList<UsuarioFabrica> ObtenerUsuarios();
         Boolean Bool1(string nick);
-        IList<Producto> GetContentsByParameters2(int keyWords);
-        void AddMember(Usuario user);
+        IList<Producto> ObtenerProductosPorNombre(string keyWords);
+
         Task Login(String nick, String password);
         Usuario UserLogged();
         Usuario ObtenerUsuarioPorNick(string nick);
         Producto ObtenerProductoPorPrecio(int nick);
-        //Comprador ObtenerCompradorPorNick(string nick);
+
         Usuario ObtenerUsuarioPorEdad(int edad);
         Usuario UpdateEdadUsuario(Usuario usuario,int edad);
-        void AddUsuario(Usuario usuario);
-        void AgregarAlCarrito(int usuarioId, int productoId);
-        //void CrearUsuario(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
-        //void AgregarUsuarioABaseDeDatos(Usuario usuario,int? limiteGasto);
+        void AgregarAlCarrito(int usuarioId, int productoId, int cantidad);
+
         IList<CarritoCompra> GetChartByUser(Usuario user);
         IList<CarritoCompra> ObtenerChart();
-        IList<Articulo> ObtenerArticulos();
-        IList<Articulo> GetArticleByProduct(Producto prod);
+
         IList<Producto> GetProductByChart(CarritoCompra carr);
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
         void Logout();
-        IList<Articulo> GetArticlesByName(string keyWords);
-        //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
-        void AddBuyer(Comprador comp);
-        void AddBuyer2(int limite);
-        void AddBuyer22(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
-        Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick);
-        Task AddFactoryMember(UsuarioFabrica nuevouser);
-        //void AgregarUsuarioABaseDeDatos2(Usuario usuario, int? limiteGasto);
-        //void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null);
+        Task LoginComprador(String nick, String password);
+        IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);
+        UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);
+        IList<UsuarioComprador> ObtenerCompradores();
+        Task InicializarDatosDesdeBD();
+        void AgregarProductoAGuardados(int idComprador, int idProducto);
+        void ActualizarUnidadesBD(Pedidopoo ped);
+        void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades);        
+        void AgregarProductoADeseos(int idComprador, int idProducto);
+        void RealizarPedido(int idComprador);
+        IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
+        List<Producto> PooGuardados(int userid);
+        List<(Producto,int)> PooCarrito(int userid);
+        List<Producto> PooDeseos(int userid);
+        void EliminarAlCarrito(int usuarioId, int productoId);
+        void EliminarAlGuardado(int usuarioId, int productoId);
+        void EliminarAlDeseo(int usuarioId, int productoId);
+        void EliminarProductoCarrito(int idComprador, int idProducto);
+        void EliminarProductoGuardado(int idComprador, int idProducto);
+        void EliminarProductoDeseo(int idComprador, int idProducto);
+        UsuarioComprador LoginComprador2(String nick, String password);
 
     }
 }

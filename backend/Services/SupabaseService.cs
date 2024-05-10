@@ -11,6 +11,8 @@ using backend.Models;
 using Postgrest.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using backend.MetodoFabrica;
+using Postgrest.Attributes;
+using backend.ModelsSupabase;
 
 namespace backend.Services
 {
@@ -51,6 +53,40 @@ namespace backend.Services
             Console.WriteLine("Producto insertado correctamente en Supabase.");
         }
 
+        public async Task InsertarPedido(PedidopooBD nuevopedido)
+        {
+            
+            try{
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                    .From<PedidopooBD>()
+                    .Insert(nuevopedido);
+                Console.WriteLine("Pedido insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar pedido en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+        }
+
+        public async Task InsertarPedidoproducto(PedidoProductoBD nuevopedido)
+        {
+            
+            try{
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                    .From<PedidoProductoBD>()
+                    .Insert(nuevopedido);
+                Console.WriteLine("Producto en pedido insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar producto en pedido en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+        }
+
         public async Task<List<Producto>> GetProductsById(int y)
         {
             var result = await _supabaseClient
@@ -72,7 +108,19 @@ namespace backend.Services
         {
             var result = await _supabaseClient
                                 .From<Producto>()
-                                .Where(x => x.Precio_cents == filtro)
+                                .Where(x => x.Precio == filtro)
+                                .Get();
+            
+                                
+            Producto users = result.Model;
+            return users;                    
+        }
+
+        public async Task<Producto> ProductById(int id)
+        {
+            var result = await _supabaseClient
+                                .From<Producto>()
+                                .Where(x => x.Id == id)
                                 .Get();
             
                                 
@@ -100,23 +148,34 @@ namespace backend.Services
             return productos1;
         }
 
-        public async Task<List<Articulo>> GetAllArticles()
+        public async Task<List<Guardadoparamastarde>> GetGuardados()
         {
             var productos = await _supabaseClient
-                                .From<Articulo>()
+                                .From<Guardadoparamastarde>()
                                 .Get();
 
-            List <Articulo> productos1 = productos.Models;
+            List <Guardadoparamastarde> productos1 = productos.Models;
             return productos1;
         }
 
-        public async Task<List<Usuario>> GetAllUsers()
+        public async Task<List<Listadeseos>> GetDeseos()
         {
-            var users = await _supabaseClient
-                                .From<Usuario>()
+            var productos = await _supabaseClient
+                                .From<Listadeseos>()
                                 .Get();
 
-            List <Usuario> allusers = users.Models;
+            List <Listadeseos> productos1 = productos.Models;
+            return productos1;
+        }
+
+
+        public async Task<List<UsuarioFabrica>> GetAllUsers()
+        {
+            var users = await _supabaseClient
+                                .From<UsuarioFabrica>()
+                                .Get();
+
+            List <UsuarioFabrica> allusers = users.Models;
             return allusers;
         
         }
@@ -135,13 +194,36 @@ namespace backend.Services
             return users;                    
         }
 
-        public async Task<List<Comprador>> GetAllBuyers()
+        public async Task<PedidopooBD> PedidoByRandom(int filtro)
+        {
+            var result = await _supabaseClient
+                                .From<PedidopooBD>()
+                                .Where(x => x.RandomId == filtro)
+                                .Get();
+            
+                                
+            PedidopooBD users = result.Model;
+            return users;                    
+        }
+        public async Task<UsuarioComprador> UserBuyerByNick(string filtro)
+        {
+            var result = await _supabaseClient
+                                .From<UsuarioComprador>()
+                                .Where(x => x.Nick_name == filtro)
+                                .Get();
+            
+                                
+            UsuarioComprador users = result.Model;
+            return users;                    
+        }
+
+        public async Task<List<UsuarioComprador>> GetAllBuyers()
         {
             var users = await _supabaseClient
-                                .From<Comprador>()
+                                .From<UsuarioComprador>()
                                 .Get();
 
-            List <Comprador> allusers = users.Models;
+            List <UsuarioComprador> allusers = users.Models;
             return allusers;
         
         }
@@ -204,15 +286,31 @@ namespace backend.Services
 
         public async Task InsertarBuyerFactory(UsuarioComprador nuevouser)
         {
+
             
+            try{
 
-            // Inserta el nuevo producto en la tabla correspondiente
-            await _supabaseClient
-                    .From<UsuarioComprador>()
-                    .Insert(nuevouser);
-            Console.WriteLine("Compradorfactory insertado correctamente en Supabase.");
+                UsuarioCompradorBD nuevo = new UsuarioCompradorBD{
+                    Id= nuevouser.Id,
+                    Nombre= nuevouser.Nombre,
+                    Nick_name= nuevouser.Nick_name,
+                    Contraseña= nuevouser.Contraseña,
+                    Email= nuevouser.Email,
+                    Edad= nuevouser.Edad,
+                    Limite_gasto_cents_mes= nuevouser.Limite_gasto_cents_mes
+                };
+                // Inserta el nuevo producto en la tabla correspondiente
+                await _supabaseClient
+                        .From<UsuarioCompradorBD>()
+                        .Insert(nuevo);
+                Console.WriteLine("Compradorfactory insertado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al insertar buyerfactory en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
         }
-
         public async Task InsertarSellerFactory(UsuarioVendedor nuevouser)
         {
             
@@ -225,16 +323,6 @@ namespace backend.Services
         }
 
 
-        public async Task InsertarBuyerEnUsuarios(Comprador2 nuevouser)
-        {
-            
-
-            // Inserta el nuevo producto en la tabla correspondiente
-            await _supabaseClient
-                    .From<Comprador2>()
-                    .Insert(nuevouser);
-            Console.WriteLine("User insertado correctamente en Supabase.");
-        }
 
         public async Task InsertarBuyer(Comprador nuevobuyer)
         {
@@ -274,6 +362,18 @@ namespace backend.Services
             return result.Models.Any();
         }
 
+        public async Task<bool> UsuarioCompradorExistePorApodo(string apodo)
+        {
+        // Realizar una consulta a la tabla de usuarios para verificar si existe un usuario con el apodo dado
+            var result = await _supabaseClient
+                                .From<UsuarioComprador>()
+                                .Where(x => x.Nick_name == apodo)
+                                .Get();
+
+            // Si la consulta devuelve algún resultado, significa que el usuario existe
+            return result.Models.Any();
+        }
+
         public async Task<Usuario> UpdateAgeUser(Usuario usuario,int edad1 ,int edad)
         {
             await _supabaseClient
@@ -283,6 +383,24 @@ namespace backend.Services
                     .Update();
 
             return usuario;
+        }
+
+        public async Task<Producto> UpdateCantidadProducto(Producto prod,int cant)
+        {
+            try{
+                await _supabaseClient
+                        .From<Producto>()
+                        .Where(x => x.Id == prod.Id)
+                        .Set(x => x.Cantidad, prod.Cantidad - cant)
+                        .Update();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error actualizar cantidad de producto en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+
+            return prod;
         }
 
         public async Task InsertarCarrito(CarritoCompra nuevocarrito)
@@ -296,18 +414,69 @@ namespace backend.Services
             Console.WriteLine("Carrito insertado correctamente en Supabase.");
         }
 
-        public async Task<UsuarioFabrica> UsuarioFabricaByNick(string filtro)
+        public async Task InsertarDeseo(Listadeseos nuevodeseo)
         {
-            var result = await _supabaseClient
-                                .From<UsuarioFabrica>()
-                                .Select("*,usuario:nick_name")
-                                .Where(x => x.Nick_name == filtro)
-                                .Get();
             
-                                
-            UsuarioFabrica users = result.Model;
-            return users;                    
+
+            // Inserta el nuevo producto en la tabla correspondiente
+            await _supabaseClient
+                    .From<Listadeseos>()
+                    .Insert(nuevodeseo);
+            Console.WriteLine("Deseo insertado correctamente en Supabase.");
         }
+
+        public async Task InsertarGuardado(Guardadoparamastarde nuevoguardado)
+        {
+            
+
+            // Inserta el nuevo producto en la tabla correspondiente
+            await _supabaseClient
+                    .From<Guardadoparamastarde>()
+                    .Insert(nuevoguardado);
+            Console.WriteLine("Guardado insertado correctamente en Supabase.");
+        }
+
+        public async Task EliminarCarrito(CarritoCompra nuevocarrito)
+        {
+            await _supabaseClient
+                    .From<CarritoCompra>()
+                    .Delete(nuevocarrito);
+            Console.WriteLine("Carrito eliminado correctamente en Supabase.");
+        }
+
+        public async Task EliminarGuardado(int usuarioId, int productoId)
+        {
+            try{
+                await _supabaseClient
+                    .From<Guardadoparamastarde>()
+                    .Where(x => x.Id_comprador == usuarioId && x.Id_producto == productoId)
+                    .Delete();
+            Console.WriteLine("Guardado eliminado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error borrar producto en guardados en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+        }
+            
+
+        public async Task EliminarDeseo(int usuarioId, int productoId)
+        {
+            try{
+                await _supabaseClient
+                    .From<Listadeseos>()
+                    .Where(x => x.Id_comprador == usuarioId && x.Id_producto == productoId)
+                    .Delete();
+            Console.WriteLine("Listadeseos eliminado correctamente en Supabase.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error borrar producto en listadeseos en Supabase: " + ex.Message);
+                throw; // Lanza la excepción para propagarla hacia arriba
+            }
+        }
+
         
     }
 }

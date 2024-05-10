@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Logica;
+using backend.MetodoFabrica;
 
 
 namespace backend.Controllers
@@ -16,29 +17,8 @@ namespace backend.Controllers
             this._logica = logica;
         }
 
-        [HttpPost("carrito")]
-        public IActionResult AgregarAlCarrito([FromBody] CarritoCompraRequest request)
-        {
-            // Obtener el usuario logueado
-            var user = _logica.UserLogged();
 
-            // Verificar si el usuario está autenticado
-            if (user == null)
-            {
-                // El usuario no está autenticado, puedes devolver un error o redirigir a la página de inicio de sesión
-                return Unauthorized();
-            }
-            var userId = user.Id;
-            _logica.AgregarAlCarrito(userId, request.ProductId);
-            return Ok();
-        }
 
-        [HttpPost("carritomanual")]
-        public IActionResult AgregarAlCarritoManual([FromBody] CarritoCompraRequest2 request)
-        {
-            _logica.AgregarAlCarrito(request.UserId, request.ProductId);
-            return Ok();
-        }
 
         [HttpGet("userlogged")]
         public IActionResult ObtenerUsuarioLogueado()
@@ -70,19 +50,20 @@ namespace backend.Controllers
                 return StatusCode(500, "Internal Server Error : " + ex.Message);
             }
         }
-    /*
-        [HttpGet("buscar/productos")]
-        public IActionResult BuscarProductos([FromQuery] string query)
+    
+        [HttpGet("productos/{query}")]
+        public IActionResult BuscarProductos(string query)
         {
-            var productos = _logica.BuscarProductos(query);
+            string textoModificado = query.Replace('_', ' ').ToLower();
+            var productos = _logica.ObtenerProductosPorNombre(textoModificado);
             return Ok(productos);
         }
-    */
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+    
+        [HttpGet("login/{nick}/{password}")]
+        public IActionResult Login(string nick, string password)
         {
-            _logica.Login(request.Nick, request.Password);
-            return Ok();
+            var perfil =  _logica.LoginComprador2(nick, password);
+            return Ok(perfil);
         }
 
         [HttpPost("login2")]
@@ -90,11 +71,10 @@ namespace backend.Controllers
         {
             try
             {
-                await _logica.Login(request.Nick, request.Password);
-                var perfil = _logica.ObtenerUsuarioPorNick(request.Nick);
-                var user = _logica.GetChartByUser(perfil);
+                await _logica.LoginComprador(request.Nick, request.Password);
+                var perfil = _logica.ObtenerUsuarioCompradorPorNick(request.Nick);
+                var user = _logica.GetChartByUserBuyer(perfil);
                 var productos = new List<Producto>();
-                var items = new List<Articulo>();
 
                 // Para cada carrito en la lista de carritos
                 foreach(var product in user)
@@ -105,19 +85,11 @@ namespace backend.Controllers
                     // Agregar los artículos a la lista de items
                     productos.AddRange(productItems);
                 }
-                foreach(var prod in productos)
-                {
-                    // Obtener los artículos asociados al producto
-                    var productItems = _logica.GetArticleByProduct(prod);
-                    
-                    // Agregar los artículos a la lista de items
-                    items.AddRange(productItems);
-                }
 
                 var responseData = new 
                 {
                     Perfil = perfil,
-                    ArticulosEnCarrito = items
+                    ArticulosEnCarrito = productos
                 };
 
                 return Ok(responseData);
@@ -135,78 +107,122 @@ namespace backend.Controllers
                 return StatusCode(500, "Error: " + ex.Message);
             }
         }
-/*
-        [HttpPost("registro")]
-        public IActionResult RegistrarComprador([FromBody] RegistroRequest request)
-        {
-            try
-            {
-                
-                if (request.LimiteGasto != null)
-                {
-                    // El usuario es un comprador
-                    _logica.CrearUsuario2(request.Nombre, request.Nick, request.Password, request.Email, request.Edad, request.LimiteGasto.Value);
-                }
-                else
-                {
-                    // El usuario es un usuario regular
-                    _logica.CrearUsuario2(request.Nombre, request.Nick, request.Password, request.Email, request.Edad);
-                }
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error : " + ex.Message);
-            }
-        }
-*/
         [HttpGet("perfil/{nick}")]
         public IActionResult ObtenerPerfilComprador(string nick)
         {
             var perfil = _logica.ObtenerUsuarioPorNick(nick);
             return Ok(perfil);
         }
-/*
-        [HttpGet("productos/buscar")]
-        public IActionResult BuscarProductosPorNombre([FromQuery] string nombre)
+
+
+        [HttpPost("agregar-producto-a-guardados/{idComprador}/{idProducto}")]
+        public IActionResult AgregarProductoAGuardados(int idComprador, int idProducto)
         {
-            try
-            {
-                var productos = _logica.ObtenerProductosPorNombre(nombre);
-                return Ok(productos);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal Server Error: " + ex.Message);
-            }
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.AgregarProductoAGuardados(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Producto agregado a guardados correctamente");
         }
 
+        [HttpPost("agregar-producto-a-carrito/{idComprador}/{idProducto}/{cantidad}")]
+        public IActionResult AgregarProductoACarrito(int idComprador, int idProducto, int cantidad)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.AgregarProductoACarrito(idComprador, idProducto,cantidad);
 
-*/
+            // Devuelve una respuesta exitosa
+            return Ok("Producto agregado al carrito correctamente");
+        }
+
+        [HttpPost("realizar-pedido/{idComprador}")]
+        public IActionResult RealizarPedido(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.RealizarPedido(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok();
+        }
+
+        [HttpPost("agregar-producto-a-deseos/{idComprador}/{idProducto}")]
+        public IActionResult AgregarProductoADeseos(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.AgregarProductoADeseos(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Deseo agregado al carrito correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-deseos/{idComprador}/{idProducto}")]
+        public IActionResult EliminarProductoADeseos(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoDeseo(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Deseo eliminado correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-guardados/{idComprador}/{idProducto}")]
+        public IActionResult EliminarProductoAGuardados(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoGuardado(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("Guardado eliminado correctamente");
+        }
+
+        [HttpPost("eliminar-producto-a-carrito/{idComprador}/{idProducto}")]
+        public IActionResult EliminarProductoACarrito(int idComprador, int idProducto)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            _logica.EliminarProductoCarrito(idComprador, idProducto);
+
+            // Devuelve una respuesta exitosa
+            return Ok("carrito eliminado correctamente");
+        }
+
         
 
-
-        [HttpPost("registrobuyer")]
-        public IActionResult Añadirbuyer(Buyer request)
+        [HttpGet("obtener-carrito/{idComprador}")]
+        public IActionResult ObtenerCarrito(int idComprador)
         {
-            
-            _logica.AddBuyer2(request.limite);
-            return Ok();
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooCarrito(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
         }
 
-        [HttpPost("registrobuyer2")]
-        public IActionResult Añadirbuyer2(RegistroRequest request)
+        [HttpGet("obtener-guardados/{idComprador}")]
+        public IActionResult ObtenerGuardados(int idComprador)
         {
-            
-            _logica.AddBuyer22(request.Nombre, request.Nick, request.Password, request.Email, request.Edad);
-            return Ok();
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooGuardados(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
         }
 
-        [HttpPost("registroglobal")]
-        public IActionResult RegistroGlobl(RegistroRequest request)
+        [HttpGet("obtener-deseos/{idComprador}")]
+        public IActionResult ObtenerDeseos(int idComprador)
+        {
+            // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
+            var lista = _logica.PooDeseos(idComprador);
+
+            // Devuelve una respuesta exitosa
+            return Ok(lista);
+        }
+
+
+        [HttpPost("registroglobal/{nombre}/{nick}/{password}/{email}/{edad}/{limitegasto}")]
+        public IActionResult RegistroGlobl(string nombre, string nick, string password, string email, int edad, int limitegasto)
         {
             
-            _logica.AddFabrica(request.Nombre, request.Nick, request.Password, request.Email, request.Edad, request.LimiteGasto);
+            _logica.AddFabrica(nombre, nick, password, email, edad, limitegasto);
             return Ok();
         }
 

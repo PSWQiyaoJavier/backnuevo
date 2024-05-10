@@ -2,6 +2,9 @@ using backend.Services;
 using backend.Models;
 using System.Collections.Generic;
 using backend.MetodoFabrica;
+using backend.PatronObservador;
+using System.Runtime.InteropServices;
+using backend.ModelsSupabase;
 
 namespace backend.Logica
 {
@@ -9,9 +12,413 @@ namespace backend.Logica
     {
         private readonly Interfaz interf;
         private Usuario userlogin;
+
+        private static List<Producto> _productos = new List<Producto>();
+        private static List<UsuarioComprador> _compradores = new List<UsuarioComprador>();
+        
+
         public LogicaClase(Interfaz interf)
         {
             this.interf = interf;
+
+            if (_productos.Count == 0 && _compradores.Count == 0)
+            {
+                InicializarDatosDesdeBD().Wait();
+            }
+        }
+
+
+        public async Task InicializarDatosDesdeBD()
+        {
+            // Obtener los datos de productos y compradores desde la base de datos
+            var datosProductos = ObtenerProductos();
+            var datosCompradores = ObtenerCompradores();
+
+            // Convertir los datos en objetos de tu dominio
+            foreach (var datosProducto in datosProductos)
+            {
+                Producto producto = new Producto
+                {
+                    Id = datosProducto.Id,
+                    Nombre = datosProducto.Nombre,
+                    Categoria = datosProducto.Categoria,
+                    Descripcion = datosProducto.Descripcion,
+                    Cantidad = datosProducto.Cantidad,
+                    Precio = datosProducto.Precio,
+                    Foto1 = datosProducto.Foto1,
+                    Foto2 = datosProducto.Foto2,
+                    Foto3 = datosProducto.Foto3
+                    // Puedes agregar más propiedades si es necesario
+                };
+                List<IObservador> compradores = ObtenerCompradoresGuardados(producto);
+                foreach (IObservador comprador in compradores)
+                {
+                    producto.AgregarObservador(comprador);
+                }
+                _productos.Add(producto);
+
+            }
+
+            foreach (var datosComprador in datosCompradores)
+            {
+                UsuarioComprador comprador = new UsuarioComprador
+                {
+                    Id = datosComprador.Id,
+                    Nombre = datosComprador.Nombre,
+                    Nick_name = datosComprador.Nick_name,
+                    Contraseña = datosComprador.Contraseña,
+                    Email = datosComprador.Email,
+                    Edad = datosComprador.Edad,
+                    Limite_gasto_cents_mes = datosComprador.Limite_gasto_cents_mes,
+                    Carritolista = datosComprador.Carritolista,
+                    Guardadoslista = datosComprador.Guardadoslista
+                    // Puedes agregar más propiedades si es necesario
+                };
+                //.Carritolista = ObtenerProductosCarrito(comprador);
+                comprador.Deseoslista = ObtenerProductosDeseos(comprador);
+                comprador.Guardadoslista = ObtenerProductosGuardados(comprador);
+
+                _compradores.Add(comprador);
+            }
+        }
+
+
+        public void AgregarProductoAGuardados(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if(comprador.Guardadoslista == null)
+                        {
+                            comprador.Guardadoslista = new List<Producto>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.AgregarProductoGuardado(producto);
+                        AgregarAGuardados(comprador.Id,producto.Id);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if(comprador.Carritolista == null)
+                        {
+                            comprador.Carritolista = new Dictionary<Producto, int>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.AgregarProductoCarrito(producto, cantidades);
+                        //AgregarAlCarrito(comprador.Id,producto.Id, cantidades);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void AgregarProductoADeseos(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        if(comprador.Deseoslista == null)
+                        {
+                            comprador.Deseoslista = new List<Producto>();
+                        }
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.AgregarProductoDeseos(producto);
+                        AgregarADeseos(comprador.Id,producto.Id);
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void EliminarProductoCarrito(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoCarrito(producto);
+                        //EliminarAlCarrito(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void EliminarProductoGuardado(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoGuardados(producto);
+                        EliminarAlGuardado(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void EliminarProductoDeseo(int idComprador, int idProducto)
+        {
+            if (_compradores != null && _productos != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == idComprador);
+                Producto producto = _productos.FirstOrDefault(p => p.Id == idProducto);
+                // Verificar si se encontraron el comprador y el producto
+                if (comprador != null && producto != null)
+                {
+                    try{
+                        // Agregar el producto a la lista de deseos del comprador
+                        comprador.EliminarProductoDeseos(producto);
+                        EliminarAlDeseo(comprador.Id,producto.Id); 
+                    }catch(Exception ex){
+                        Console.WriteLine("Error : " + ex.Message);
+                    throw; // Lanza la excepción para propagarla hacia arriba
+                    }
+                }
+            }
+        }
+
+        public void RealizarPedido(int idComprador)
+        {
+            if (_compradores != null)
+            {
+                UsuarioComprador comprador = _compradores.FirstOrDefault(p => p.Id == idComprador);
+                if (comprador != null)
+                {
+                    Pedidopoo ped = comprador.RealizarPedido();
+                    //ActualizarUnidadesBD(ped);
+                    int random1 = PedidoBD(comprador.Id);
+                    PedidoProductoBD(comprador.Id,random1);
+                }
+            }
+        }
+
+        public int PedidoBD(int idComprador)
+        {
+            int randomnumber = GenerarIdUnico();
+            PedidopooBD nuevoElemento = new PedidopooBD
+            {
+                Id_comprador = idComprador,
+                RandomId = randomnumber
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
+            interf.InsertarPedido(nuevoElemento);  
+            return randomnumber;
+        }
+
+        public async void PedidoProductoBD(int idComprador, int random1)
+        {
+            PedidopooBD ped = await interf.PedidoByRandom(random1);
+            UsuarioComprador comprador = _compradores.FirstOrDefault(p => p.Id == idComprador);
+            foreach (var productopedido in comprador.Carritolista)
+            {
+                PedidoProductoBD nuevoElemento = new PedidoProductoBD
+                {
+                    Id_pedido = ped.Id,
+                    Id_Producto = productopedido.Key.Id,
+                    Cantidad = productopedido.Value
+                    // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+                };
+                interf.InsertarPedidoproducto(nuevoElemento);
+            }
+
+            
+            comprador.Carritolista.Clear();
+            
+        }
+
+        private int GenerarIdUnico()
+        {
+            // Aquí se genera un ID único provisional para el pedido (puede ser una implementación simple basada en un contador o un UUID)
+            return new Random().Next(1000, 9999);
+        }
+
+        public void ActualizarUnidadesBD(Pedidopoo ped)
+        {
+            try{
+                foreach (var productoPedido in ped.Productos)
+                    {
+                        Producto producto = productoPedido.Producto;
+                        int cantidadComprada = productoPedido.Cantidad;
+
+                        // Restar la cantidad comprada del inventario del producto
+                        interf.UpdateCantidadProducto(producto,cantidadComprada);
+                        
+                    }
+                }catch(Exception ex){
+                Console.WriteLine("Error : " + ex.Message);
+            throw; // Lanza la excepción para propagarla hacia arriba
+            }
+            
+        }
+
+
+        public List<Producto> PooGuardados(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Guardadoslista;
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+        public List<(Producto,int)> PooCarrito(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Carritolista.Select(kv => (kv.Key, kv.Value)).ToList();
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+        public List<Producto> PooDeseos(int userid)
+        {
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Id == userid);
+            if (comprador !=null)
+            {
+                try{
+                    return comprador.Deseoslista;
+                }catch(Exception ex){
+                    Console.WriteLine("Error : " + ex.Message);
+                }
+            }
+            return null;
+            
+
+        }
+
+
+/*
+        public List<Producto> ObtenerProductosCarrito(UsuarioComprador perfil)
+        {
+            var user = GetChartByUserBuyer(perfil);
+            var productos = new Dictionary<Producto, int>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByChart(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.Add(productItems);
+            }
+            return productos;
+
+        }
+
+*/
+
+        public List<Producto> ObtenerProductosGuardados(UsuarioComprador perfil)
+        {
+            var user = GetGuardadosByUserBuyer(perfil);
+            var productos = new List<Producto>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByGuardados(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+        public List<Producto> ObtenerProductosDeseos(UsuarioComprador perfil)
+        {
+            var user = GetDeseosByUserBuyer(perfil);
+            var productos = new List<Producto>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetProductByDeseos(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
+        }
+
+
+        public List<IObservador> ObtenerCompradoresGuardados(Producto perfil)
+        {
+            var user = GetUserBuyerByProducto(perfil);
+            var productos = new List<IObservador>();
+
+            // Para cada carrito en la lista de carritos
+            foreach(var product in user)
+            {
+                // Obtener los artículos asociados al producto
+                var productItems = GetBuyerByGuardados(product);
+                
+                // Agregar los artículos a la lista de items
+                productos.AddRange(productItems);
+            }
+            return productos;
+
         }
 
 
@@ -33,32 +440,40 @@ namespace backend.Logica
             return productos1;
         }
 
-        public IList<Articulo> ObtenerArticulos()
+        public IList<Guardadoparamastarde> ObtenerGuardados()
         {
-            var productosTask = interf.GetAllArticles(); // Obtiene la tarea para obtener todos los productos
+            var productosTask = interf.GetGuardados(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<Articulo> productos1 = productosTask.Result;
+            List<Guardadoparamastarde> productos1 = productosTask.Result;
             return productos1;
         }
 
-        public IList<Usuario> ObtenerUsuarios()
+        public IList<Listadeseos> ObtenerDeseos()
+        {
+            var productosTask = interf.GetDeseos(); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            List<Listadeseos> productos1 = productosTask.Result;
+            return productos1;
+        }
+
+
+        public IList<UsuarioFabrica> ObtenerUsuarios()
         {
             var productosTask = interf.GetAllUsers(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<Usuario> productos1 = productosTask.Result;
+            List<UsuarioFabrica> productos1 = productosTask.Result;
             return productos1;
         }
 
-
-
-        public IList<Usuario> ObtenerUsuarios2()
+        public IList<UsuarioComprador> ObtenerCompradores()
         {
-            var productosTask = interf.GetAllUsers(); // Obtiene la tarea para obtener todos los productos
+            var productosTask = interf.GetAllBuyers(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<Usuario> productos1 = productosTask.Result;
+            List<UsuarioComprador> productos1 = productosTask.Result;
             return productos1;
         }
 
@@ -72,31 +487,19 @@ namespace backend.Logica
         }
 
 
-        public IList<Producto> GetContentsByParameters2(int keyWords)
+        public IList<Producto> ObtenerProductosPorNombre(string keyWords)
         {
             
 
             IList<Producto> allContents = ObtenerProductos();
 
             
-            allContents = allContents.Where(c => c.Precio_cents==keyWords).ToList();
+            allContents = allContents.Where(c => c.Nombre.Replace('_', ' ').ToLower().Contains(keyWords)).ToList();
             
 
             return allContents.ToList();
         }
 
-        public IList<Articulo> GetArticlesByName(string keyWords)
-        {
-            
-
-            IList<Articulo> allContents = ObtenerArticulos();
-
-            
-            allContents = allContents.Where(c => c.Nombre==keyWords).ToList();
-            
-
-            return allContents.ToList();
-        }
 
         public IList<CarritoCompra> GetChartByUser(Usuario user)
         {
@@ -105,7 +508,59 @@ namespace backend.Logica
             IList<CarritoCompra> allContents = ObtenerChart();
 
             
-            allContents = allContents.Where(c => c.Id_usuario==user.Id).ToList();
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<CarritoCompra> allContents = ObtenerChart();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<Guardadoparamastarde> allContents = ObtenerGuardados();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Guardadoparamastarde> GetUserBuyerByProducto(Producto user)
+        {
+            
+
+            IList<Guardadoparamastarde> allContents = ObtenerGuardados();
+
+            
+            allContents = allContents.Where(c => c.Id_producto==user.Id).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+        public IList<Listadeseos> GetDeseosByUserBuyer(UsuarioComprador user)
+        {
+            
+
+            IList<Listadeseos> allContents = ObtenerDeseos();
+
+            
+            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
             
 
             return allContents.ToList();
@@ -124,52 +579,51 @@ namespace backend.Logica
             return allContents.ToList();
         }
 
-        public IList<Articulo> GetArticleByProduct(Producto prod)
+        public IList<Producto> GetProductByGuardados(Guardadoparamastarde carr)
         {
             
 
-            IList<Articulo> allContents = ObtenerArticulos();
+            IList<Producto> allContents = ObtenerProductos();
 
             
-            allContents = allContents.Where(c => c.Id==prod.Id_articulo).ToList();
+            allContents = allContents.Where(c => c.Id==carr.Id_producto).ToList();
             
 
             return allContents.ToList();
         }
 
-        public void AddMember(Usuario user)
+        public IList<UsuarioComprador> GetBuyerByGuardados(Guardadoparamastarde carr)
         {
+            
+
+            IList<UsuarioComprador> allContents = ObtenerCompradores();
 
             
-            IList<Usuario> allUsers = ObtenerUsuarios();
+            allContents = allContents.Where(c => c.Id==carr.Id_comprador).ToList();
+            
 
-
-            bool nicknamebool = allUsers.Any(u => u.Nick_name == user.Nick_name);
-
-            // Verificar si ya existe un miembro con el mismo correo electrónico
-            bool emailbool = allUsers.Any(u => u.Email == user.Email);
-
-
-            if (!nicknamebool && !emailbool)
-            {
-                interf.InsertarUser(user);
-            }
-            else
-            {
-                if (nicknamebool)
-                    throw new Exception("El member con nick " + user.Nick_name + " ya existe.");
-
-                if (emailbool)
-                    throw new Exception("El member con correo electrónico " + user.Email + " ya existe.");
-            }
-
+            return allContents.ToList();
         }
 
-        public async Task AddFactoryMember(UsuarioFabrica nuevouser)
+        public IList<Producto> GetProductByDeseos(Listadeseos carr)
+        {
+            
+
+            IList<Producto> allContents = ObtenerProductos();
+
+            
+            allContents = allContents.Where(c => c.Id==carr.Id_producto).ToList();
+            
+
+            return allContents.ToList();
+        }
+
+
+        public async Task AddFactoryMember(UsuarioComprador nuevouser)
         {
 
             
-            IList<Usuario> allUsers = ObtenerUsuarios();
+            IList<UsuarioFabrica> allUsers = ObtenerUsuarios();
 
 
             bool nicknamebool = allUsers.Any(u => u.Nick_name == nuevouser.Nick_name);
@@ -180,7 +634,7 @@ namespace backend.Logica
 
             if (!nicknamebool && !emailbool)
             {
-                await interf.InsertarUserFactory(nuevouser);
+                await interf.InsertarBuyerFactory(nuevouser);
             }
             else
             {
@@ -193,67 +647,22 @@ namespace backend.Logica
 
         }
 
-        public void AddBuyer(Comprador comp)
-        {
-            //interf.InsertarBuyer(comp);
-            
 
-        }
-
-        public void AddBuyer22(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null)
-        {
-            Comprador2 nuevoUsuario2;
-
-            nuevoUsuario2 = new Comprador2
-                {
-                    Nombre = nombre,
-                    Nick_name = nick_name,
-                    Contraseña = contraseña,
-                    Email = email,
-                    Edad = edad,
-                };
-
-            interf.InsertarBuyerEnUsuarios(nuevoUsuario2);
-            
-
-        }
-        public void AddBuyer2(int limite)
-        {
-
-            Usuario nuevoUsuario2 = ObtenerUsuarioPorNick("anita1234");
-
-            Comprador nuevoUsuario3 = new Comprador
-            {
-                Id = nuevoUsuario2.Id ,
-                Nombre = nuevoUsuario2.Nombre,
-                Nick_name = nuevoUsuario2.Nick_name,
-                Contraseña = nuevoUsuario2.Contraseña,
-                Email = nuevoUsuario2.Email,
-                Edad = nuevoUsuario2.Edad,
-                BaseUrl = nuevoUsuario2.BaseUrl,
-                Limite_gasto_cents_mes = limite
-                
-            };
-            Console.WriteLine("El id es :" + nuevoUsuario2.PrimaryKey);
-    
-            interf.InsertarBuyer(nuevoUsuario3);
-            
-
-        }
 
         public async Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite)
         {
             Fabrica factory;
             factory = new Fabrica(limite);
             UsuarioFabrica userfactory = factory.CrearUsuarioFabrica(nombre, nick_name, contraseña, email, edad);
-            await AddFactoryMember(userfactory);
-            UsuarioFabrica user1 = await ObtenerFabricUserPorNick(userfactory.Nick_name);
-            int id = user1.Id;
+            //await AddFactoryMember(userfactory);
+            //UsuarioFabrica user1 = await ObtenerFabricUserPorNick(userfactory.Nick_name);
+            //int id = user1.Id;
             if (userfactory is UsuarioComprador comprador)
             {
-                comprador.Id = id;
-                interf.InsertarBuyerFactory(comprador);
-                Console.WriteLine("Hola comprador");
+                //comprador.BaseUrl = user1.BaseUrl;
+                //comprador.Id = id;
+                AddFactoryMember(comprador);
+                //interf.InsertarBuyerFactory(comprador);
                 //UsuarioComprador comprador = (UsuarioComprador)userfactory;
                 //interf.InsertarBuyerFactory(userfactory);
                 // Persistir en la tabla de usuarios compradores
@@ -262,33 +671,13 @@ namespace backend.Logica
             }
             else if (userfactory is UsuarioVendedor vendedor)
             {
-                vendedor.Id = id;
+                //vendedor.Id = id;
                 interf.InsertarSellerFactory(vendedor);
                 // Persistir en la tabla de usuarios vendedores
                 // Podrías llamar a un método de persistencia para hacerlo
                 // Por ejemplo: PersistirUsuarioVendedor((UsuarioVendedor)userfactory);
             }
         }
-/*
-
-            Usuario nuevoUsuario2 = ObtenerUsuarioPorNick("anita1234");
-
-            Comprador nuevoUsuario3 = new Comprador
-            {
-                Id = nuevoUsuario2.Id ,
-                Nombre = nuevoUsuario2.Nombre,
-                Nick_name = nuevoUsuario2.Nick_name,
-                Contraseña = nuevoUsuario2.Contraseña,
-                Email = nuevoUsuario2.Email,
-                Edad = nuevoUsuario2.Edad,
-                BaseUrl = nuevoUsuario2.BaseUrl,
-                Limite_gasto_cents_mes = limite
-                
-            };
-            Console.WriteLine("El id es :" + nuevoUsuario2.PrimaryKey);
-    
-            interf.InsertarBuyer(nuevoUsuario3);
-            */
 
         
 
@@ -302,6 +691,32 @@ namespace backend.Logica
             if (!user.Contraseña.Equals(password)) throw new ContraseñaIncorrectaException("Contraseña incorrecta");
             userlogin = user;
             Console.WriteLine("Usuario con nick :" + user.Nick_name + "y contraseña :" + user.Contraseña + " logueado");
+        }
+
+        public async Task LoginComprador(String nick, String password)
+        {
+            if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
+
+            if (await interf.UsuarioCompradorExistePorApodo(nick)==false) throw new UsuarioNoExisteException("El usuario no existe");
+            UsuarioComprador user =  await interf.UserBuyerByNick(nick);
+            
+            if (!user.Contraseña.Equals(password)) throw new ContraseñaIncorrectaException("Contraseña incorrecta");
+            Console.WriteLine("UsuarioComprador con nick :" + user.Nick_name + " y contraseña :" + user.Contraseña + " logueado");
+        }
+
+        public UsuarioComprador LoginComprador2(String nick, String password)
+        {
+            if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
+
+            UsuarioComprador comprador = _compradores.FirstOrDefault(c => c.Nick_name == nick && c.Contraseña == password);
+            if(comprador !=null){
+                Console.WriteLine("UsuarioComprador con nick :" + comprador.Nick_name + " y contraseña :" + comprador.Contraseña + " logueado");
+                return comprador;
+            }
+            else{
+                throw new ContraseñaIncorrectaException("Usuario o Contraseña incorrecta");
+            }
+            
         }
 
         public Usuario UserLogged()
@@ -328,10 +743,30 @@ namespace backend.Logica
             return user1;
         }
 
+        public  UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick)
+        {
+
+            var productosTask = interf.UserBuyerByNick(nick); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            UsuarioComprador user1 = productosTask.Result;
+            return user1;
+        }
+
         public  Producto ObtenerProductoPorPrecio(int nick)
         {
 
             var productosTask = interf.ProductByPrice(nick); // Obtiene la tarea para obtener todos los productos
+            productosTask.Wait(); // Espera a que la tarea se complete
+            //return productosTask.Result;
+            Producto user1 = productosTask.Result;
+            return user1;
+        }
+
+        public  Producto ObtenerProductoPorId(int id)
+        {
+
+            var productosTask = interf.ProductById(id); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
             Producto user1 = productosTask.Result;
@@ -348,15 +783,6 @@ namespace backend.Logica
             return user1;
         }
 */
-        public  async Task<UsuarioFabrica> ObtenerFabricUserPorNick(string nick)
-        {
-
-            var productosTask = interf.UsuarioFabricaByNick(nick); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            //return productosTask.Result;
-            UsuarioFabrica user1 = productosTask.Result;
-            return user1;
-        }
         public  Usuario ObtenerUsuarioPorEdad(int edad)
         {
 
@@ -377,20 +803,17 @@ namespace backend.Logica
 
         }
 
-        public void AddUsuario(Usuario usuario)
-        {
-            interf.InsertarUser(usuario);
 
-        }
 
-        public void AgregarAlCarrito(int usuarioId, int productoId)
+        public void AgregarAlCarrito(int usuarioId, int productoId, int cantidad)
         {
             // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
             // Por ejemplo:
             CarritoCompra nuevoElemento = new CarritoCompra
             {
-                Id_usuario = usuarioId,
-                Id_producto = productoId
+                Id_comprador = usuarioId,
+                Id_producto = productoId,
+                Cantidad = cantidad
                 // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
             };
 
@@ -398,167 +821,59 @@ namespace backend.Logica
             
         }
 
-/*
-        // Método fábrica para crear usuarios
-        public void CrearUsuario(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null)
+        public void AgregarADeseos(int usuarioId, int productoId)
         {
-            Usuario nuevoUsuario;
-
-            if (limiteGasto != null)
+            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
+            // Por ejemplo:
+            Listadeseos nuevoElemento = new Listadeseos
             {
-                // Crear un nuevo Comprador
-                nuevoUsuario = new Comprador
-                {
-                    Nombre = nombre,
-                    Nick_name = nick_name,
-                    Contraseña = contraseña,
-                    Email = email,
-                    Edad = edad,
-                    Limite_gasto_cents_mes = limiteGasto.Value
-                };
-            }
-            else
-            {
-                // Crear un nuevo Usuario
-                nuevoUsuario = new Usuario
-                {
-                    Nombre = nombre,
-                    Nick_name = nick_name,
-                    Contraseña = contraseña,
-                    Email = email,
-                    Edad = edad
-                };
-            }
-            AgregarUsuarioABaseDeDatos(nuevoUsuario,limiteGasto);
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
 
-            // Retornar el nuevo usuario creado
-        }
-
-        // Método para agregar usuario a la base de datos
-        public void AgregarUsuarioABaseDeDatos(Usuario usuario,int? limiteGasto)
-        {
-
-
-            // Aquí debes llamar a los métodos de tu capa de persistencia para insertar el usuario en la base de datos
-            Usuario usuario2;
-            if (usuario is Comprador)
-            {
-                // Si el usuario es un Comprador, insertamos primero el Usuario y luego el Comprador
-
-                // Insertar el Usuario en la tabla de Usuarios
-                usuario2 = new Usuario{
-                    Nombre = usuario.Nombre,
-                    Nick_name = usuario.Nick_name,
-                    Contraseña = usuario.Contraseña,
-                    Email = usuario.Email,
-                    Edad = usuario.Edad
-                };
-                try
-                {
-                    AddMember(usuario2);
-                }
-                catch (Exception ex)
-                {
-                    // Manejar la excepción, registrarla, imprimir información de depuración, etc.
-                    Console.WriteLine("Error al insertar usuario en la base de datos: " + ex.Message);
-                }
-
-                // Obtener el ID del Usuario recién insertado
-                int usuarioId = usuario2.Id;
-
-                // Insertar el Comprador en la tabla de Compradores
-                interf.InsertarBuyer(new Comprador
-                {
-                    Id = usuarioId, // Utilizar el mismo ID del Usuario
-                    Limite_gasto_cents_mes = ((Comprador)usuario).Limite_gasto_cents_mes
-                    // Otros atributos específicos de Comprador
-                });
-
-            }
-            else
-            {
-                // Si es un usuario normal, lo insertamos directamente en la tabla de Usuarios
-                AddMember(usuario);
-
-            }
-        }
-
-        public IList<Producto> ObtenerProductosPorNombre(string nombre)
-        {        
-            var productosTask = interf.GetAllProducts(); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            List<Producto> productos = productosTask.Result;
-            var productosFiltrados = productos.Where(p => p.Articulo.Nombre.Contains(nombre)).ToList();
-
-            return productosFiltrados;
-        }
-
-        // Método fábrica para crear usuarios
-        public void CrearUsuario2(string nombre, string nick_name, string contraseña, string email, int edad, int? limiteGasto = null)
-        {
-            Usuario nuevoUsuario;
-            Comprador nuevoUsuario2;
-
-            nuevoUsuario = new Usuario
-                {
-                    Nombre = nombre,
-                    Nick_name = nick_name,
-                    Contraseña = contraseña,
-                    Email = email,
-                    Edad = edad
-                };
-            try
-            {
-                AddMember(nuevoUsuario);    
-
-                if (limiteGasto != null && nuevoUsuario!=null)
-                {
-                    Usuario user2 = ObtenerUsuarioPorNick(nick_name);
-                    int usuarioId = user2.Id;
-                    Console.WriteLine(usuarioId);
-                    // Crear un nuevo Comprador
-                    nuevoUsuario2 = new Comprador
-                    {
-                        Id = usuarioId,
-                        Limite_gasto_cents_mes = limiteGasto.Value
-                    };
-                    AddBuyer(nuevoUsuario2);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Manejar la excepción
-                Console.WriteLine("Error al crear el usuario: " + ex.Message);
-                // Puedes lanzar la excepción o manejarla de otra manera según tus necesidades
-            }
-            //AgregarUsuarioABaseDeDatos(nuevoUsuario,limiteGasto);
-
-            // Retornar el nuevo usuario creado
-        }
-
-/*
-        // Método para agregar usuario a la base de datos
-        public void AgregarUsuarioABaseDeDatos2(Usuario usuario, int? limiteGasto)
-        {
-
+            interf.InsertarDeseo(nuevoElemento);
             
-            // Obtener el ID del Usuario recién insertado
-            int usuarioId = usuario.Id;
+        }
 
-            // Insertar el Comprador en la tabla de Compradores
-            interf.InsertarBuyer(new Comprador
+        public void AgregarAGuardados(int usuarioId, int productoId)
+        {
+            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
+            // Por ejemplo:
+            Guardadoparamastarde nuevoElemento = new Guardadoparamastarde
             {
-                Id = usuarioId, // Utilizar el mismo ID del Usuario
-                Limite_gasto_cents_mes = ((Comprador)usuario).Limite_gasto_cents_mes
-                // Otros atributos específicos de Comprador
-            });
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
+            };
 
-            }
+            interf.InsertarGuardado(nuevoElemento);
+            
+        }
 
-        
+        public void EliminarAlCarrito(int usuarioId, int productoId)
+        {
+            CarritoCompra nuevoElemento = new CarritoCompra
+            {
+                Id_comprador = usuarioId,
+                Id_producto = productoId
+            };
+            interf.EliminarCarrito(nuevoElemento);
+        }
 
-*/
+        public void EliminarAlGuardado(int usuarioId, int productoId)
+        {
+            interf.EliminarGuardado(usuarioId, productoId);
+        }
 
+        public void EliminarAlDeseo(int usuarioId, int productoId)
+        {
+            interf.EliminarDeseo(usuarioId,productoId);
+        }
+
+
+
+       
     }
 
 }
