@@ -66,47 +66,7 @@ namespace backend.Controllers
             return Ok(perfil);
         }
 
-        [HttpPost("login2")]
-        public async Task<IActionResult> Login2([FromBody] LoginRequest request)
-        {
-            try
-            {
-                await _logica.LoginComprador(request.Nick, request.Password);
-                var perfil = _logica.ObtenerUsuarioCompradorPorNick(request.Nick);
-                var user = _logica.GetChartByUserBuyer(perfil);
-                var productos = new List<Producto>();
-
-                // Para cada carrito en la lista de carritos
-                foreach(var product in user)
-                {
-                    // Obtener los artículos asociados al producto
-                    var productItems = _logica.GetProductByChart(product);
-                    
-                    // Agregar los artículos a la lista de items
-                    productos.AddRange(productItems);
-                }
-
-                var responseData = new 
-                {
-                    Perfil = perfil,
-                    ArticulosEnCarrito = productos
-                };
-
-                return Ok(responseData);
-            }
-            catch(UsuarioNoExisteException ex)
-            {
-                return NotFound("Usuario no encontrado: " + ex.Message);
-            }
-            catch(ContraseñaIncorrectaException ex)
-            {
-                return Unauthorized("Contraseña incorrecta: " + ex.Message);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, "Error: " + ex.Message);
-            }
-        }
+        
         [HttpGet("perfil/{nick}")]
         public IActionResult ObtenerPerfilComprador(string nick)
         {

@@ -5,6 +5,7 @@ using backend.MetodoFabrica;
 using backend.PatronObservador;
 using System.Runtime.InteropServices;
 using backend.ModelsSupabase;
+using System.Runtime.ConstrainedExecution;
 
 namespace backend.Logica
 {
@@ -69,9 +70,7 @@ namespace backend.Logica
                     Contraseña = datosComprador.Contraseña,
                     Email = datosComprador.Email,
                     Edad = datosComprador.Edad,
-                    Limite_gasto_cents_mes = datosComprador.Limite_gasto_cents_mes,
-                    Carritolista = datosComprador.Carritolista,
-                    Guardadoslista = datosComprador.Guardadoslista
+                    Limite_gasto_cents_mes = datosComprador.Limite_gasto_cents_mes
                     // Puedes agregar más propiedades si es necesario
                 };
                 //.Carritolista = ObtenerProductosCarrito(comprador);
@@ -273,8 +272,11 @@ namespace backend.Logica
         private int GenerarIdUnico()
         {
             // Aquí se genera un ID único provisional para el pedido (puede ser una implementación simple basada en un contador o un UUID)
-            return new Random().Next(1000, 9999);
+            return new Random().Next(MinRandomId, MaxRandomId);
         }
+
+        private const int MinRandomId = 1000;
+        private const int MaxRandomId = 9999;
 
         public void ActualizarUnidadesBD(Pedidopoo ped)
         {
@@ -427,8 +429,24 @@ namespace backend.Logica
             var productosTask = interf.GetAllProducts(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<Producto> productos1 = productosTask.Result;
-            return productos1;
+            List<ProductoBD> productos1 = productosTask.Result;
+            List<Producto> productos = new List<Producto>();
+            foreach (var producto in productos1)
+            {
+                Producto nuevo = new Producto{
+                    Id= producto.Id,
+                    Nombre= producto.Nombre,
+                    Categoria= producto.Categoria,
+                    Descripcion= producto.Descripcion,
+                    Cantidad= producto.Cantidad,
+                    Precio= producto.Precio,
+                    Foto1= producto.Foto1,
+                    Foto2= producto.Foto2,
+                    Foto3= producto.Foto3
+                };
+                productos.Add(nuevo);
+            }
+            return productos;
         }
 
         public IList<CarritoCompra> ObtenerChart()
@@ -473,8 +491,22 @@ namespace backend.Logica
             var productosTask = interf.GetAllBuyers(); // Obtiene la tarea para obtener todos los productos
             productosTask.Wait(); // Espera a que la tarea se complete
             //return productosTask.Result;
-            List<UsuarioComprador> productos1 = productosTask.Result;
-            return productos1;
+            List<UsuarioCompradorBD> productos1 = productosTask.Result;
+            List<UsuarioComprador> compradors = new List<UsuarioComprador>();
+            foreach (var nuevouser in productos1)
+            {
+                UsuarioComprador nuevo = new UsuarioComprador{
+                    Id= nuevouser.Id,
+                    Nombre= nuevouser.Nombre,
+                    Nick_name= nuevouser.Nick_name,
+                    Contraseña= nuevouser.Contraseña,
+                    Email= nuevouser.Email,
+                    Edad= nuevouser.Edad,
+                    Limite_gasto_cents_mes= nuevouser.Limite_gasto_cents_mes
+                };
+                compradors.Add(nuevo);
+            }
+            return compradors;
         }
 
         public Boolean Bool1(string nick)
@@ -823,23 +855,18 @@ namespace backend.Logica
 
         public void AgregarADeseos(int usuarioId, int productoId)
         {
-            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
-            // Por ejemplo:
             Listadeseos nuevoElemento = new Listadeseos
             {
                 Id_comprador = usuarioId,
                 Id_producto = productoId
-                // Puedes añadir otros campos si los necesitas, como cantidad, fecha, etc.
             };
 
-            interf.InsertarDeseo(nuevoElemento);
-            
+            interf.InsertarDeseo(nuevoElemento); 
         }
 
         public void AgregarAGuardados(int usuarioId, int productoId)
         {
-            // Aquí iría la lógica para insertar el nuevo elemento en la tabla CarritoCompra
-            // Por ejemplo:
+
             Guardadoparamastarde nuevoElemento = new Guardadoparamastarde
             {
                 Id_comprador = usuarioId,

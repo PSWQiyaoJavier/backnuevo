@@ -128,13 +128,13 @@ namespace backend.Services
             return users;                    
         }
 
-        public async Task<List<Producto>> GetAllProducts()
+        public async Task<List<ProductoBD>> GetAllProducts()
         {
             var productos = await _supabaseClient
-                                .From<Producto>()
+                                .From<ProductoBD>()
                                 .Get();
 
-            List <Producto> productos1 = productos.Models;
+            List <ProductoBD> productos1 = productos.Models;
             return productos1;
         }
 
@@ -217,13 +217,13 @@ namespace backend.Services
             return users;                    
         }
 
-        public async Task<List<UsuarioComprador>> GetAllBuyers()
+        public async Task<List<UsuarioCompradorBD>> GetAllBuyers()
         {
             var users = await _supabaseClient
-                                .From<UsuarioComprador>()
+                                .From<UsuarioCompradorBD>()
                                 .Get();
 
-            List <UsuarioComprador> allusers = users.Models;
+            List <UsuarioCompradorBD> allusers = users.Models;
             return allusers;
         
         }
@@ -416,9 +416,6 @@ namespace backend.Services
 
         public async Task InsertarDeseo(Listadeseos nuevodeseo)
         {
-            
-
-            // Inserta el nuevo producto en la tabla correspondiente
             await _supabaseClient
                     .From<Listadeseos>()
                     .Insert(nuevodeseo);

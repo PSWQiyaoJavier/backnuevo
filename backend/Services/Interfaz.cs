@@ -23,7 +23,7 @@ namespace backend.Services
         Task InsertarProducto(Producto nuevoProducto);
         Task<List<Producto>> GetProductsById(int y);
         Task EliminarProducto(Producto producto);
-        Task<List<Producto>> GetAllProducts();
+        Task<List<ProductoBD>> GetAllProducts();
         Task<List<UsuarioFabrica>> GetAllUsers();
         Task<Usuario> UserByNick(string filtro);
         Task InsertarUser(Usuario nuevouser);
@@ -41,7 +41,7 @@ namespace backend.Services
         Task InsertarSellerFactory(UsuarioVendedor nuevouser);
         Task<bool> UsuarioCompradorExistePorApodo(string apodo);
         Task<UsuarioComprador> UserBuyerByNick(string filtro);
-        Task<List<UsuarioComprador>> GetAllBuyers();
+        Task<List<UsuarioCompradorBD>> GetAllBuyers();
         Task<Producto> ProductById(int id);
         Task<List<Guardadoparamastarde>> GetGuardados();
         Task<List<Listadeseos>> GetDeseos();
