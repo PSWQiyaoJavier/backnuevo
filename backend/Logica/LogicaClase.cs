@@ -12,7 +12,7 @@ namespace backend.Logica
     public class LogicaClase : InterfazLogica
     {
         private readonly Interfaz interf;
-        private Usuario userlogin;
+
 
         private static List<Producto> _productos = new List<Producto>();
         private static List<UsuarioComprador> _compradores = new List<UsuarioComprador>();
@@ -509,14 +509,6 @@ namespace backend.Logica
             return compradors;
         }
 
-        public Boolean Bool1(string nick)
-        {
-            var bool2 = interf.UsuarioExistePorApodo(nick);
-            bool2.Wait();
-            Boolean bool3 = bool2.Result;
-            return bool3;
-
-        }
 
 
         public IList<Producto> ObtenerProductosPorNombre(string keyWords)
@@ -533,18 +525,6 @@ namespace backend.Logica
         }
 
 
-        public IList<CarritoCompra> GetChartByUser(Usuario user)
-        {
-            
-
-            IList<CarritoCompra> allContents = ObtenerChart();
-
-            
-            allContents = allContents.Where(c => c.Id_comprador==user.Id).ToList();
-            
-
-            return allContents.ToList();
-        }
 
         public IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user)
         {
@@ -713,18 +693,6 @@ namespace backend.Logica
 
         
 
-        public async Task Login(String nick, String password)
-        {
-            if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
-
-            if (await interf.UsuarioExistePorApodo(nick)==false) throw new UsuarioNoExisteException("El usuario no existe");
-            Usuario user =  await interf.UserByNick(nick);
-            
-            if (!user.Contraseña.Equals(password)) throw new ContraseñaIncorrectaException("Contraseña incorrecta");
-            userlogin = user;
-            Console.WriteLine("Usuario con nick :" + user.Nick_name + "y contraseña :" + user.Contraseña + " logueado");
-        }
-
         public async Task LoginComprador(String nick, String password)
         {
             if(nick == "" || password == "" ) throw new CamposVaciosException("Existen campos vacíos");
@@ -751,29 +719,7 @@ namespace backend.Logica
             
         }
 
-        public Usuario UserLogged()
-        {
-            Usuario user = userlogin;
-            return user;
-        }
 
-        public void Logout()
-        {
-            if(userlogin == null) throw new Exception("Usuario no loggeado");
-            userlogin = null;
-            DateTime fechaacceso = DateTime.Now;
-        }
-
-
-        public  Usuario ObtenerUsuarioPorNick(string nick)
-        {
-
-            var productosTask = interf.UserByNick(nick); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            //return productosTask.Result;
-            Usuario user1 = productosTask.Result;
-            return user1;
-        }
 
         public  UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick)
         {
@@ -815,27 +761,6 @@ namespace backend.Logica
             return user1;
         }
 */
-        public  Usuario ObtenerUsuarioPorEdad(int edad)
-        {
-
-            var productosTask = interf.UserByAge(edad); // Obtiene la tarea para obtener todos los productos
-            productosTask.Wait(); // Espera a que la tarea se complete
-            //return productosTask.Result;
-            Usuario user1 = productosTask.Result;
-            return user1;
-        }
-
-        public Usuario UpdateEdadUsuario(Usuario usuario,int edad)
-        {
-            var usuario1 = interf.UpdateAgeUser(usuario,usuario.Edad,edad);
-            usuario1.Wait();
-            Usuario user1 = usuario1.Result;
-            
-            return user1;
-
-        }
-
-
 
         public void AgregarAlCarrito(int usuarioId, int productoId, int cantidad)
         {

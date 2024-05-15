@@ -18,25 +18,6 @@ namespace backend.Controllers
         }
 
 
-
-
-        [HttpGet("userlogged")]
-        public IActionResult ObtenerUsuarioLogueado()
-        {
-            // Obtener el usuario logueado
-            var user = _logica.UserLogged();
-
-            // Verificar si el usuario está autenticado
-            if (user == null)
-            {
-                // El usuario no está autenticado, puedes devolver un error o redirigir a la página de inicio de sesión
-                return Unauthorized();
-            }
-
-            // Devolver el usuario logueado
-            return Ok(user);
-        }
-
         [HttpGet("productos")]
         public IActionResult GetProductos()
         {
@@ -67,12 +48,6 @@ namespace backend.Controllers
         }
 
         
-        [HttpGet("perfil/{nick}")]
-        public IActionResult ObtenerPerfilComprador(string nick)
-        {
-            var perfil = _logica.ObtenerUsuarioPorNick(nick);
-            return Ok(perfil);
-        }
 
 
         [HttpPost("agregar-producto-a-guardados/{idComprador}/{idProducto}")]

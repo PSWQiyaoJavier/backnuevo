@@ -20,24 +20,15 @@ namespace backend.Logica
     {
         IList<Producto> ObtenerProductos();
         IList<UsuarioFabrica> ObtenerUsuarios();
-        Boolean Bool1(string nick);
         IList<Producto> ObtenerProductosPorNombre(string keyWords);
 
-        Task Login(String nick, String password);
-        Usuario UserLogged();
-        Usuario ObtenerUsuarioPorNick(string nick);
         Producto ObtenerProductoPorPrecio(int nick);
-
-        Usuario ObtenerUsuarioPorEdad(int edad);
-        Usuario UpdateEdadUsuario(Usuario usuario,int edad);
         void AgregarAlCarrito(int usuarioId, int productoId, int cantidad);
 
-        IList<CarritoCompra> GetChartByUser(Usuario user);
         IList<CarritoCompra> ObtenerChart();
 
         IList<Producto> GetProductByChart(CarritoCompra carr);
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
-        void Logout();
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
         Task LoginComprador(String nick, String password);
         IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);

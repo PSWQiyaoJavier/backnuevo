@@ -182,17 +182,6 @@ namespace backend.Services
 
 
 
-        public async Task<Usuario> UserByNick(string filtro)
-        {
-            var result = await _supabaseClient
-                                .From<Usuario>()
-                                .Where(x => x.Nick_name == filtro)
-                                .Get();
-            
-                                
-            Usuario users = result.Model;
-            return users;                    
-        }
 
         public async Task<PedidopooBD> PedidoByRandom(int filtro)
         {
@@ -243,28 +232,6 @@ namespace backend.Services
             return users;                    
         }
 */
-        public async Task<Usuario> UserByAge(int filtro)
-        {
-            var result = await _supabaseClient
-                                .From<Usuario>()
-                                .Where(x => x.Edad == filtro)
-                                .Get();
-            
-                                
-            Usuario users = result.Model;
-            return users;                    
-        }
-
-        public async Task InsertarUser(Usuario nuevouser)
-        {
-            
-
-            // Inserta el nuevo producto en la tabla correspondiente
-            await _supabaseClient
-                    .From<Usuario>()
-                    .Insert(nuevouser);
-            Console.WriteLine("User insertado correctamente en Supabase.");
-        }
 
         public async Task InsertarUserFactory(UsuarioFabrica nuevouser)
         {
@@ -324,43 +291,6 @@ namespace backend.Services
 
 
 
-        public async Task InsertarBuyer(Comprador nuevobuyer)
-        {
-            try{
-
-                // Inserta el nuevo producto en la tabla correspondiente
-                await _supabaseClient
-                        .From<Comprador>()
-                        //.Set(x => x.Id, 13)
-                        .Insert(nuevobuyer);
-                Console.WriteLine("Comprador insertado correctamente en Supabase.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error al insertar comprador en Supabase: " + ex.Message);
-                throw; // Lanza la excepción para propagarla hacia arriba
-            }
-        }
-
-        public async Task Insert1<Comprador>(Comprador item) where Comprador : Usuario,new()
-        {
-
-            await _supabaseClient
-                    .From<Comprador>()
-                    .Insert(item);
-        }
-
-        public async Task<bool> UsuarioExistePorApodo(string apodo)
-        {
-        // Realizar una consulta a la tabla de usuarios para verificar si existe un usuario con el apodo dado
-            var result = await _supabaseClient
-                                .From<Usuario>()
-                                .Where(x => x.Nick_name == apodo)
-                                .Get();
-
-            // Si la consulta devuelve algún resultado, significa que el usuario existe
-            return result.Models.Any();
-        }
 
         public async Task<bool> UsuarioCompradorExistePorApodo(string apodo)
         {
@@ -372,17 +302,6 @@ namespace backend.Services
 
             // Si la consulta devuelve algún resultado, significa que el usuario existe
             return result.Models.Any();
-        }
-
-        public async Task<Usuario> UpdateAgeUser(Usuario usuario,int edad1 ,int edad)
-        {
-            await _supabaseClient
-                    .From<Usuario>()
-                    .Where(x => x.Edad == edad1)
-                    .Set(x => x.Edad, edad)
-                    .Update();
-
-            return usuario;
         }
 
         public async Task<Producto> UpdateCantidadProducto(Producto prod,int cant)
