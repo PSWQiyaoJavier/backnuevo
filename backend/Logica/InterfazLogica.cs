@@ -18,25 +18,18 @@ namespace backend.Logica
 {
     public interface InterfazLogica
     {
-        IList<Producto> ObtenerProductos();
-        IList<UsuarioFabrica> ObtenerUsuarios();
+
         IList<Producto> ObtenerProductosPorNombre(string keyWords);
-
-        Producto ObtenerProductoPorPrecio(int nick);
-        void AgregarAlCarrito(int usuarioId, int productoId, int cantidad);
-
-        IList<CarritoCompra> ObtenerChart();
 
         IList<Producto> GetProductByChart(CarritoCompra carr);
         //IList<Producto> ObtenerProductosPorNombre(string nombre);
         Task AddFabrica(string nombre, string nick_name, string contraseña, string email, int edad, int limite);
-        Task LoginComprador(String nick, String password);
+
         IList<CarritoCompra> GetChartByUserBuyer(UsuarioComprador user);
-        UsuarioComprador ObtenerUsuarioCompradorPorNick(string nick);
-        IList<UsuarioComprador> ObtenerCompradores();
+
         Task InicializarDatosDesdeBD();
         void AgregarProductoAGuardados(int idComprador, int idProducto);
-        void ActualizarUnidadesBD(Pedidopoo ped);
+
         void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades);        
         void AgregarProductoADeseos(int idComprador, int idProducto);
         void RealizarPedido(int idComprador);
@@ -44,13 +37,11 @@ namespace backend.Logica
         List<Producto> PooGuardados(int userid);
         List<(Producto,int)> PooCarrito(int userid);
         List<Producto> PooDeseos(int userid);
-        void EliminarAlCarrito(int usuarioId, int productoId);
-        void EliminarAlGuardado(int usuarioId, int productoId);
-        void EliminarAlDeseo(int usuarioId, int productoId);
         void EliminarProductoCarrito(int idComprador, int idProducto);
         void EliminarProductoGuardado(int idComprador, int idProducto);
         void EliminarProductoDeseo(int idComprador, int idProducto);
         UsuarioComprador LoginComprador2(String nick, String password);
+        IList<Producto> ObtenerProductos();
 
     }
 }
