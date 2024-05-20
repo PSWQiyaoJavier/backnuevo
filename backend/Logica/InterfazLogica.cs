@@ -32,7 +32,7 @@ namespace backend.Logica
 
         void AgregarProductoACarrito(int idComprador, int idProducto, int cantidades);        
         void AgregarProductoADeseos(int idComprador, int idProducto);
-        void RealizarPedido(int idComprador);
+        void RealizarPedido(int idComprador,int numero, string uno, string dos, string metodopago, int total);
         IList<Guardadoparamastarde> GetGuardadosByUserBuyer(UsuarioComprador user);
         List<Producto> PooGuardados(int userid);
         List<(Producto,int)> PooCarrito(int userid);

@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\34640\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj": {}
+    "C:\\Users\\javie\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj": {}
   },
   "projects": {
-    "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\backend.csproj": {
+    "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\34640\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\obj\\",
+        "projectPath": "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\javie\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\34640\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\javie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -74,19 +76,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             }
           ],
           "frameworkReferences": {
@@ -97,34 +99,36 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\34640\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj": {
+    "C:\\Users\\javie\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\34640\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj",
+        "projectUniqueName": "C:\\Users\\javie\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj",
         "projectName": "TestProject2",
-        "projectPath": "C:\\Users\\34640\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj",
-        "packagesPath": "C:\\Users\\34640\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\34640\\source\\repos\\backnuevo\\TestProject2\\obj\\",
+        "projectPath": "C:\\Users\\javie\\source\\repos\\backnuevo\\TestProject2\\TestProject2.csproj",
+        "packagesPath": "C:\\Users\\javie\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\javie\\source\\repos\\backnuevo\\TestProject2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\34640\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\javie\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\backend.csproj": {
-                "projectPath": "C:\\Users\\34640\\source\\repos\\backnuevo\\backend\\backend.csproj"
+              "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj": {
+                "projectPath": "C:\\Users\\javie\\source\\repos\\backnuevo\\backend\\backend.csproj"
               }
             }
           }
@@ -179,15 +183,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.16, 7.0.16]"
+              "version": "[7.0.17, 7.0.17]"
             }
           ],
           "frameworkReferences": {
@@ -195,7 +199,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

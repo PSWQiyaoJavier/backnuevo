@@ -70,11 +70,11 @@ namespace backend.Controllers
             return Ok("Producto agregado al carrito correctamente");
         }
 
-        [HttpPost("realizar-pedido/{idComprador}")]
-        public IActionResult RealizarPedido(int idComprador)
+        [HttpPost("realizar-pedido/{idComprador}/{numero}/{uno}/{dos}/{metodopago}/{total}")]
+        public IActionResult RealizarPedido(int idComprador,int numero, string uno, string dos, string metodopago, int total)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.RealizarPedido(idComprador);
+            _logica.RealizarPedido(idComprador,numero,uno,dos,metodopago,total);
 
             // Devuelve una respuesta exitosa
             return Ok();

@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 using backend.ModelsSupabase;
 using System.Runtime.ConstrainedExecution;
 using backend.FachadaBD;
+using backend.PatronEstrategia;
 
 namespace backend.Logica
 {
     public class LogicaClase : InterfazLogica
     {
         private readonly InterfazFachadaBD interf;
-
 
         private static List<Producto> _productos = new List<Producto>();
         private static List<UsuarioComprador> _compradores = new List<UsuarioComprador>();
@@ -25,7 +25,7 @@ namespace backend.Logica
 
             if (_productos.Count == 0 && _compradores.Count == 0)
             {
-                //InicializarDatosDesdeBD().Wait();
+                InicializarDatosDesdeBD().Wait();
             }
         }
 
@@ -227,7 +227,7 @@ namespace backend.Logica
             }
         }
 
-        public void RealizarPedido(int idComprador)
+        public void RealizarPedido(int idComprador,int numero, string uno, string dos, string metodopago, int total)
         {
             if (_compradores != null)
             {
@@ -235,6 +235,17 @@ namespace backend.Logica
                 if (comprador != null)
                 {
                     Pedidopoo ped = comprador.RealizarPedido();
+                    if(metodopago == "paypal")
+                    {
+                        ped.pagar(new Paypal(uno, dos),total);
+                    }
+                    else if (metodopago == "tarjeta")
+                    {
+                        ped.pagar(new TarjetaCredito(numero,uno,dos), total);
+                    }
+
+                    
+                    
                     //ActualizarUnidadesBD(ped);
                     int random1 = interf.PedidoBD(comprador.Id);
                     interf.PedidoProductoBD(comprador.Id,random1,_compradores);

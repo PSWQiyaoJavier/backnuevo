@@ -2,6 +2,7 @@ using Postgrest.Attributes;
 using Postgrest.Models;
 using backend.MetodoFabrica;
 using backend.Logica;
+using backend.PatronEstrategia;
 
 namespace backend.Models
 {    
@@ -31,8 +32,11 @@ namespace backend.Models
                     
                 }
             }
-    
-
+            
+            public void pagar(EstrategiaPago formapago, int total)
+            {
+                formapago.ProcesarPago(total);
+            }
 
 
         }
