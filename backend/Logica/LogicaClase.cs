@@ -25,7 +25,7 @@ namespace backend.Logica
 
             if (_productos.Count == 0 && _compradores.Count == 0)
             {
-                InicializarDatosDesdeBD().Wait();
+                //InicializarDatosDesdeBD().Wait();
             }
         }
 
