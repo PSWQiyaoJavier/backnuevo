@@ -23,8 +23,8 @@ namespace backend.Controllers
         {
             try
             {
-            var productos = _logica.ObtenerProductos();
-            return Ok(productos);
+                var productos = _logica.ObtenerProductos();
+                return Ok(productos);
             }
             catch (Exception ex)
             {

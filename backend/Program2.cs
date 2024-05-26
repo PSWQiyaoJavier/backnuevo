@@ -15,7 +15,7 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddScoped<SupabaseService>();
 builder.Services.AddScoped<LogicaClase>();
 builder.Services.AddScoped<ClaseFachadaBD>();
-builder.Services.AddScoped<Interfaz, SupabaseService>();
+//builder.Services.AddScoped<Interfaz, SupabaseService>();
 builder.Services.AddScoped<InterfazLogica, LogicaClase>();
 builder.Services.AddScoped<InterfazFachadaBD, ClaseFachadaBD>();
 builder.Services.AddControllers();

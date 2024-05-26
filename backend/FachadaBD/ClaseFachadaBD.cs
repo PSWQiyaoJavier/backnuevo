@@ -11,11 +11,11 @@ namespace backend.FachadaBD
 {
     public class ClaseFachadaBD : InterfazFachadaBD
     {
-        private readonly Interfaz interf;
+        private readonly SupabaseService interf;
 
-        public ClaseFachadaBD(Interfaz interf)
+        public ClaseFachadaBD(IConfiguration configuration)
         {
-            this.interf = interf;
+            interf = SupabaseService.GetInstance(configuration);
         }
 
         public int PedidoBD(int idComprador)

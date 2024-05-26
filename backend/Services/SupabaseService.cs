@@ -16,8 +16,9 @@ using backend.ModelsSupabase;
 
 namespace backend.Services
 {
-    public class SupabaseService : Interfaz
+    public class SupabaseService 
     {
+        private static SupabaseService _instance;
         private readonly Supabase.Client _supabaseClient;
 
         public SupabaseService(IConfiguration configuration)
@@ -33,6 +34,15 @@ namespace backend.Services
             _supabaseClient = new Supabase.Client(supabaseUrl, supabaseKey, options);
 
              // Espera a que la inicialización se complete antes de devolver el control
+        }
+        public static SupabaseService GetInstance(IConfiguration configuration)
+        {
+            if (_instance == null)
+            {
+                _instance = new SupabaseService(configuration);
+            }
+            return _instance;
+
         }
 
         public async Task InitializeSupabaseAsync()
