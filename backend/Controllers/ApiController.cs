@@ -94,7 +94,7 @@ namespace backend.Controllers
         public IActionResult EliminarProductoADeseos(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.EliminarProductoDeseo(idComprador, idProducto);
+            _logica.EliminarProductoListaDeseos(idComprador, idProducto);
 
             // Devuelve una respuesta exitosa
             return Ok("Deseo eliminado correctamente");

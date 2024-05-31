@@ -39,7 +39,7 @@ namespace backend.Logica
         List<Producto> PooDeseos(int userid);
         void EliminarProductoCarrito(int idComprador, int idProducto);
         void EliminarProductoGuardado(int idComprador, int idProducto);
-        void EliminarProductoDeseo(int idComprador, int idProducto);
+        void EliminarProductoListaDeseos(int idComprador, int idProducto);
         UsuarioComprador LoginComprador2(String nick, String password);
         IList<Producto> ObtenerProductos();
 

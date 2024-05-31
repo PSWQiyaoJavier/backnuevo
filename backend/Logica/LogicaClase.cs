@@ -206,7 +206,7 @@ namespace backend.Logica
             }
         }
 
-        public void EliminarProductoDeseo(int idComprador, int idProducto)
+        public void EliminarProductoListaDeseos(int idComprador, int idProducto)
         {
             if (_compradores != null && _productos != null)
             {

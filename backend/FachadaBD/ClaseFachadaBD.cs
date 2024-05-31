@@ -148,7 +148,7 @@ namespace backend.FachadaBD
         {
 
             
-            IList<UsuarioFabrica> allUsers = ObtenerUsuarios();
+            IList<UsuarioComprador> allUsers = ObtenerCompradores();
 
 
             bool nicknamebool = allUsers.Any(u => u.Nick_name == nuevouser.Nick_name);
