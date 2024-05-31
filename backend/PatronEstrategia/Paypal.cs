@@ -14,7 +14,7 @@ namespace backend.PatronEstrategia
         }
         public void ProcesarPago(double cantidad)
         {
-            // Lógica para procesar el pago con tarjeta de crédito
+            // Lógica para procesar el pago con paypal
             Console.WriteLine($"Procesando pago con paypal por un monto de {cantidad}.");
         }
     }

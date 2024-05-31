@@ -5,19 +5,14 @@ using backend.FachadaBD;
 using Moq;
 using backend.Logica;
 using backend.Services;
+//using Castle.Core.Configuration;
+using Microsoft.Extensions.Configuration;
 
 public class UnitTest1
 {
-    [Fact]
-    public void Test1()
-    {
-
-        var result = 2+3;
-        Assert.Equal(5,result);
-    }
 
     [Fact]
-    public void Test2()
+    public void AgregarProductoaListaDeseos()
     {
         UsuarioComprador comprador = new UsuarioComprador();
         Producto producto = new Producto { Id = 1, Nombre = "Producto de prueba", Precio = 10 };
