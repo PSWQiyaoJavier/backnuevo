@@ -1,5 +1,6 @@
 using backend.Services;
 using backend.Logica;
+using backend.FachadaBD;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +14,10 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddScoped<SupabaseService>();
 builder.Services.AddScoped<LogicaClase>();
-builder.Services.AddScoped<Interfaz, SupabaseService>();
+builder.Services.AddScoped<ClaseFachadaBD>();
+//builder.Services.AddScoped<Interfaz, SupabaseService>();
 builder.Services.AddScoped<InterfazLogica, LogicaClase>();
+builder.Services.AddScoped<InterfazFachadaBD, ClaseFachadaBD>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -2,17 +2,15 @@ using Postgrest.Attributes;
 using Postgrest.Models;
 using backend.MetodoFabrica;
 using backend.Logica;
+using backend.PatronEstrategia;
 
 namespace backend.Models
-{   
-    [Table("pedido")]    
+{    
     public class Pedidopoo : BaseModel
         {
-            [PrimaryKey]
-            [Column("id")]
+
             public int Id { get; set; }
 
-            [Column("id_comprador")]
             public int Id_comprador { get; set; }
 
             public List<PedidoProducto> Productos { get; set; }
@@ -34,8 +32,11 @@ namespace backend.Models
                     
                 }
             }
-    
-
+            
+            public void pagar(EstrategiaPago formapago, int total)
+            {
+                formapago.ProcesarPago(total);
+            }
 
 
         }

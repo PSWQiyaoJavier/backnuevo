@@ -5,14 +5,9 @@ using backend.Models;
 
 namespace backend.MetodoFabrica
 {
-    [Table("comprador")]
     public class UsuarioComprador : UsuarioFabrica, IObservador
     {
-
-
-        [Column("limite_gasto_cents_mes")]
         public int Limite_gasto_cents_mes { get; set; }
-
 
 
         public Dictionary<Producto, int> Carritolista { get; set; }
@@ -132,7 +127,6 @@ namespace backend.MetodoFabrica
                 Pedidospoo.Add(pedido);
                 pedido.RestarCantidadProductosDeInventario();
                 return pedido;
-                //Carritolista.Clear();
             }
             return null;
         }

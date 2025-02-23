@@ -1,7 +1,9 @@
 # Binarios generados
 backend\bin/
 backend\obj/
-
+/appsettings.json
+backend\appsettings.json
+backend/appsettings.json
 # Carpetas de dependencias
 packages/
 node_modules/

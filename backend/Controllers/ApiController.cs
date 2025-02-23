@@ -18,32 +18,13 @@ namespace backend.Controllers
         }
 
 
-
-
-        [HttpGet("userlogged")]
-        public IActionResult ObtenerUsuarioLogueado()
-        {
-            // Obtener el usuario logueado
-            var user = _logica.UserLogged();
-
-            // Verificar si el usuario está autenticado
-            if (user == null)
-            {
-                // El usuario no está autenticado, puedes devolver un error o redirigir a la página de inicio de sesión
-                return Unauthorized();
-            }
-
-            // Devolver el usuario logueado
-            return Ok(user);
-        }
-
         [HttpGet("productos")]
         public IActionResult GetProductos()
         {
             try
             {
-            var productos = _logica.ObtenerProductos();
-            return Ok(productos);
+                var productos = _logica.ObtenerProductos();
+                return Ok(productos);
             }
             catch (Exception ex)
             {
@@ -66,53 +47,7 @@ namespace backend.Controllers
             return Ok(perfil);
         }
 
-        [HttpPost("login2")]
-        public async Task<IActionResult> Login2([FromBody] LoginRequest request)
-        {
-            try
-            {
-                await _logica.LoginComprador(request.Nick, request.Password);
-                var perfil = _logica.ObtenerUsuarioCompradorPorNick(request.Nick);
-                var user = _logica.GetChartByUserBuyer(perfil);
-                var productos = new List<Producto>();
-
-                // Para cada carrito en la lista de carritos
-                foreach(var product in user)
-                {
-                    // Obtener los artículos asociados al producto
-                    var productItems = _logica.GetProductByChart(product);
-                    
-                    // Agregar los artículos a la lista de items
-                    productos.AddRange(productItems);
-                }
-
-                var responseData = new 
-                {
-                    Perfil = perfil,
-                    ArticulosEnCarrito = productos
-                };
-
-                return Ok(responseData);
-            }
-            catch(UsuarioNoExisteException ex)
-            {
-                return NotFound("Usuario no encontrado: " + ex.Message);
-            }
-            catch(ContraseñaIncorrectaException ex)
-            {
-                return Unauthorized("Contraseña incorrecta: " + ex.Message);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500, "Error: " + ex.Message);
-            }
-        }
-        [HttpGet("perfil/{nick}")]
-        public IActionResult ObtenerPerfilComprador(string nick)
-        {
-            var perfil = _logica.ObtenerUsuarioPorNick(nick);
-            return Ok(perfil);
-        }
+        
 
 
         [HttpPost("agregar-producto-a-guardados/{idComprador}/{idProducto}")]
@@ -135,11 +70,11 @@ namespace backend.Controllers
             return Ok("Producto agregado al carrito correctamente");
         }
 
-        [HttpPost("realizar-pedido/{idComprador}")]
-        public IActionResult RealizarPedido(int idComprador)
+        [HttpPost("realizar-pedido/{idComprador}/{numero}/{uno}/{dos}/{metodopago}/{total}")]
+        public IActionResult RealizarPedido(int idComprador,int numero, string uno, string dos, string metodopago, int total)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.RealizarPedido(idComprador);
+            _logica.RealizarPedido(idComprador,numero,uno,dos,metodopago,total);
 
             // Devuelve una respuesta exitosa
             return Ok();
@@ -159,7 +94,7 @@ namespace backend.Controllers
         public IActionResult EliminarProductoADeseos(int idComprador, int idProducto)
         {
             // Llama al método de lógica para agregar el producto a la lista de deseos del comprador
-            _logica.EliminarProductoDeseo(idComprador, idProducto);
+            _logica.EliminarProductoListaDeseos(idComprador, idProducto);
 
             // Devuelve una respuesta exitosa
             return Ok("Deseo eliminado correctamente");
